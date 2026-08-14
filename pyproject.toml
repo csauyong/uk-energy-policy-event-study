@@ -1,0 +1,123 @@
+[project]
+name = "policy-event-study"
+version = "0.1.0"
+description = "Synthetic control and SDiD event studies on UK energy-policy shocks"
+requires-python = ">=3.11"
+authors = [{ name = "Chun Sang Au Yong", email = "auyongchunsang@gmail.com" }]
+
+dependencies = [
+    # dataframes
+    "pandas>=2.2",
+    "polars>=1.0",
+    "pyarrow>=16.0",
+    # modelling / causal
+    "scikit-learn>=1.5",
+    "statsmodels>=0.14",
+    "econml>=0.15",
+    "linearmodels>=6.0",
+    "cvxpy>=1.5",           # synthetic control weight optimisation
+    "scipy>=1.13",
+    "numpy>=1.26",
+    # data access
+    "yfinance>=0.2.40",
+    "httpx>=0.27",
+    "requests>=2.32",
+    "pyyaml>=6.0",          # docs/events.yaml
+    "python-dotenv>=1.0",
+    # plotting
+    "matplotlib>=3.9",
+    "seaborn>=0.13",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pytest>=8.3",
+    "pytest-cov>=5.0",
+    "ipykernel>=6.29",
+    "jupyterlab>=4.2",
+    "nbstripout>=0.7",
+    "pandas-stubs",
+    "types-requests",
+    "types-pyyaml",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/policy_event_study"]
+
+# ---------------------------------------------------------------------------
+# ruff
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "N", "UP", "B", "C4", "SIM", "ARG",
+    "PD", "NPY", "RUF",
+    "ANN",   # typed signatures are mandatory
+    "D",     # loaders must document source URL + vintage
+    "PTH",
+    "DTZ",   # naive datetimes are an event-timing hazard
+]
+ignore = ["D100", "D104", "D203", "D213", "E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "ANN", "ARG"]
+"notebooks/**" = ["D", "ANN", "E402"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+# ---------------------------------------------------------------------------
+# mypy
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.11"
+files = ["src", "tests"]
+strict = true
+warn_unreachable = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+warn_return_any = true
+show_error_codes = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = [
+    "yfinance.*",
+    "econml.*",
+    "linearmodels.*",
+    "statsmodels.*",
+    "cvxpy.*",
+    "seaborn.*",
+    "sklearn.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+# ---------------------------------------------------------------------------
+# pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "slow: hits the network or takes >10s",
+    "pointintime: asserts no lookahead in event windows -- never skip these",
+]
+filterwarnings = ["error::FutureWarning"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true

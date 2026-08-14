@@ -1,0 +1,55 @@
+# ---------------------------------------------------------------------------
+# Data is NEVER committed. Everything under data/ is ignored, including price
+# histories pulled from yfinance and any cached policy-announcement scrapes.
+# Reproducibility comes from src/data/*.py + docs/data_inventory.md, not from
+# checked-in bytes. Only .gitkeep files survive so the tree shape is preserved.
+#
+# Note: the event dictionary (docs/events.yaml, hand-curated announcement dates
+# and timestamps) is source, not data, and IS committed.
+# ---------------------------------------------------------------------------
+data/**
+!data/
+!data/raw/
+!data/interim/
+!data/processed/
+!data/**/.gitkeep
+
+# Secrets
+.env
+.env.*
+!.env.example
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.python-version
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+htmlcov/
+.coverage
+.coverage.*
+
+# Notebooks
+notebooks/**/*.html
+notebooks/**/*.pdf
+
+# Reports
+reports/figures/
+reports/tables/
+!reports/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
