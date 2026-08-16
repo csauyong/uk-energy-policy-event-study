@@ -96,11 +96,23 @@ module = [
     "econml.*",
     "linearmodels.*",
     "statsmodels.*",
-    "cvxpy.*",
     "seaborn.*",
     "sklearn.*",
+    "scipy.*",
 ]
 ignore_missing_imports = true
+
+# cvxpy ships no py.typed and its expression DSL (`sum_squares`, `Variable`
+# arithmetic) is not expressible in stubs -- mypy sees module attributes that
+# do not exist statically. Skipping the import makes cvxpy `Any` at the two
+# call sites that use it, both of which immediately coerce the result to a
+# typed numpy array. Preferred over scattering `# type: ignore` through the
+# solver code.
+[[tool.mypy.overrides]]
+module = ["cvxpy.*"]
+ignore_missing_imports = true
+follow_imports = "skip"
+follow_imports_for_stubs = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"

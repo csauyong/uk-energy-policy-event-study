@@ -1,11 +1,16 @@
 # ---------------------------------------------------------------------------
 # Data is NEVER committed. Everything under data/ is ignored, including price
 # histories pulled from yfinance and any cached policy-announcement scrapes.
-# Reproducibility comes from src/data/*.py + docs/data_inventory.md, not from
-# checked-in bytes. Only .gitkeep files survive so the tree shape is preserved.
+# Reproducibility comes from src/policy_event_study/data/*.py +
+# docs/data_inventory.md, not from checked-in bytes. Only .gitkeep files
+# survive so the tree shape is preserved.
 #
-# Note: the event dictionary (docs/events.yaml, hand-curated announcement dates
-# and timestamps) is source, not data, and IS committed.
+# ONE DELIBERATE EXCEPTION: data/events/. The event dictionary is hand-curated
+# announcement dates, timestamps and provenance -- it is *source*, not data. No
+# loader can regenerate it, and "which events were in the study, and when did
+# that change" must be answerable from git history rather than from memory. It
+# is therefore committed, and `make data-check` whitelists exactly these paths
+# and nothing else under data/.
 # ---------------------------------------------------------------------------
 data/**
 !data/
@@ -13,6 +18,30 @@ data/**
 !data/interim/
 !data/processed/
 !data/**/.gitkeep
+!data/events/
+!data/events/uk_energy_policy_events.csv
+!data/events/README.md
+!data/events/candidates.md
+# Chronology is the audit trail of deductive discovery: what the grid asked and
+# which published source answered it. Committed so a pre-registration tag
+# captures the discovery step, not just its output. The raw sweep CSVs stay
+# ignored -- they are regenerable and large.
+!data/events/chronology_*.md
+!data/events/shortlist_*.md
+!data/events/shortlist_final_*.md
+!data/events/completeness_audit_*.md
+!data/events/shortlist_manual.yaml
+!data/events/inventory_apriori_*.yaml
+!data/events/inventory_apriori_*.md
+!data/events/date_resolutions_*.yaml
+# Briefing text cache: regenerable from the Library, and large.
+data/events/briefing_cache/
+!data/exposure/
+!data/exposure/firm_attributes.csv
+!data/exposure/policy_targets.csv
+!data/exposure/README.md
+!data/universe/
+!data/universe/uk_listed_universe.csv
 
 # Secrets
 .env

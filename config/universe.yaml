@@ -1,0 +1,392 @@
+# config/universe.yaml
+#
+# Universe for Project B.
+#
+# SCHEMA CHANGE (2026-08-15): treated / donor / excluded is no longer a single
+# global list. It is a GLOBAL DEFAULT plus PER-EVENT OVERRIDES, because some
+# firms' classification is event-dependent — Segro is unexposed to domestic
+# efficiency policy and plausibly exposed to commercial MEES, so it is a donor
+# for one event and treated for another. Every event must resolve every unit in
+# the universe to exactly one status; ambiguity is a hard error.
+#
+# A second schema change separates UNIT IDENTITY from DATA SOURCE. `unit_id` is
+# how a firm enters the panel; `source_ticker` is what gets fetched. They differ
+# whenever a corporate action means one price series carries two economically
+# distinct firms — see BARRATT_PRE / BTRW.L below, which is not hypothetical:
+# Yahoo serves Barratt Developments' entire pre-merger history under the
+# post-merger symbol, so the naive pull *is* the forbidden splice.
+#
+# DESIGN PRINCIPLE (unchanged)
+# The donor pool must satisfy two conditions that pull against each other:
+#   (a) NO INTERFERENCE — no donor may be affected by the policy, in either
+#       direction. A firm that BENEFITS from a policy that hurts the treated
+#       set is not a donor; it is a second treated unit with the opposite sign.
+#   (b) SPANNING — donors must collectively span the risk factors of the
+#       treated set (UK macro, rates, GBP, construction cycle, global sector
+#       demand), or pre-treatment fit is meaningless.
+#
+# Every ticker below is a CANDIDATE. Before committing, check each firm's
+# geographic and segment revenue split and record it in
+# docs/donor_pool_justification.md.
+
+meta:
+  base_currency: GBP
+  return_type: local_currency_simple   # see notes.fx below
+  min_pre_window_days: 250
+  require_full_pre_window: true        # drop donors without complete history
+  min_avg_daily_volume_gbp: 1_000_000  # illiquid names distort SC weights
+  max_donors: 40                       # Abadie: small, substantively justified
+  alignment: lag_late_markets          # notes.timezone, enforced in the loader
+  outcome: cumulative_simple_returns   # notes.matching_variable; no price levels
+
+  fx_screen_rates_to_gbp:
+    GBP: 1.00
+    GBp: 0.01      # LSE quotes in pence
+    USD: 0.79
+    EUR: 0.85
+    CHF: 0.89
+    DKK: 0.114
+
+  exchange_calendars:
+    ".L":        { tz: Europe/London,     close: "16:30", currency: GBp }
+    ".IR":       { tz: Europe/Dublin,     close: "16:30", currency: EUR }
+    ".PA":       { tz: Europe/Paris,      close: "17:30", currency: EUR }
+    ".DE":       { tz: Europe/Berlin,     close: "17:30", currency: EUR }
+    ".SW":       { tz: Europe/Zurich,     close: "17:20", currency: CHF }
+    ".CO":       { tz: Europe/Copenhagen, close: "17:00", currency: DKK }
+    "":          { tz: America/New_York,  close: "16:00", currency: USD }
+
+# ---------------------------------------------------------------------------
+# TREATED — global default status.
+#
+# `expected_sign` is defined against a TIGHTENING of UK energy-efficiency /
+# heating policy. A loosening event (the Sep-2023 rollback) flips it. Fixing
+# the convention to the policy direction rather than to the event lets one
+# field serve every event.
+#
+# Group keys are the vocabulary for the event dictionary's `affected_sectors`
+# column. A sector key in the CSV that does not appear here is a fatal error.
+#
+# Ticker verification (2026-08-15, yfinance): every symbol below resolved with
+# full daily history EXCEPT PRSR.L — see `unresolved:` at the foot of the file.
+# ---------------------------------------------------------------------------
+treated:
+
+  housebuilders:
+    expected_sign: ambiguous
+    sign_rationale: >
+      Tightening raises build cost per unit, but incumbent volume builders
+      absorb compliance cost better than small builders and have historically
+      passed it through. Unresolved ex ante and recorded as such rather than
+      guessed. Do not read a one-sided test on this group.
+    members:
+      - { unit_id: PSN.L,  name: Persimmon }
+      - { unit_id: TW.L,   name: Taylor Wimpey }
+      - { unit_id: BWY.L,  name: Bellway }
+      - { unit_id: BKG.L,  name: Berkeley Group }
+      - { unit_id: CRST.L, name: Crest Nicholson, available_from: 2013-02-14 }
+      - { unit_id: VTY.L,  name: Vistry Group }
+      - { unit_id: GLE.L,  name: MJ Gleeson }
+
+      # ------------------------------------------------------------------
+      # Barratt: TWO units, one price series, hard boundary between them.
+      #
+      # Redrow's acquisition completed 2024-08-20 (evidence: 82.3m shares
+      # traded that day against a ~6m trailing median, and 1.39bn shares now
+      # outstanding against Barratt's ~970m standalone). Yahoo renamed the
+      # whole 1988-onwards series to BTRW.L and serves neither BDEV.L nor
+      # RDW.L, so a naive pull of BTRW.L returns a series that silently
+      # changes firm mid-sample.
+      #
+      # The pre-merger portion of that series IS genuine Barratt Developments
+      # data — Yahoo renamed the symbol, it did not synthesise prices. So it
+      # is usable as a distinct unit, provided no window ever crosses the
+      # boundary. `available_to` / `available_from` enforce that, and the
+      # exclusion window drops any event whose windows would straddle it.
+      # This is NOT a spliced synthetic series: nothing is stitched, and the
+      # merger shock itself is excluded from both units.
+      # ------------------------------------------------------------------
+      - unit_id: BARRATT_PRE
+        name: Barratt Developments (pre-merger)
+        source_ticker: BTRW.L
+        available_to: 2024-08-19
+        verify: true
+        note: >
+          Confirm the pre-completion segment carries no merger-related
+          adjustment factor. Barratt itself did not split, and the share
+          issue was to Redrow holders, so the series should be untouched —
+          but this has not been verified against a second source.
+
+      - unit_id: BTRW.L
+        name: Barratt Redrow (post-merger)
+        available_from: 2024-08-21
+        note: >
+          Post-merger unit. NOTE the binding constraint: a 250-day estimation
+          window plus a 30-day embargo means this unit cannot support the
+          SC/SDiD design for any event before roughly 2025-10. The
+          dose-response design's short windows are far less demanding, which
+          is one concrete way the estimand change buys coverage.
+
+    exclusion_windows:
+      - unit_id: [BARRATT_PRE, BTRW.L]
+        start: 2024-02-07
+        end: 2024-11-20
+        reason: >
+          Redrow bid announced 2024-02-07, completed 2024-08-20, index and
+          tracker rebalancing through the autumn. The merger is itself a large
+          confounding shock and would enter any pre-treatment fit spanning it.
+          Any event in this window is dropped for both Barratt units.
+
+  insulation_and_materials:
+    expected_sign: positive
+    sign_rationale: >
+      Direct revenue channel: efficiency mandates and retrofit subsidy create
+      demand for fabric products. The cleanest sign in the universe and the
+      group most likely to carry a detectable effect.
+    members:
+      - { unit_id: KRX.IR,    name: Kingspan }
+      - { unit_id: ROCK-B.CO, name: Rockwool }
+      - { unit_id: SGO.PA,    name: Saint-Gobain }
+      - { unit_id: GEN.L,     name: Genuit }
+      - { unit_id: SIG.L,     name: SIG plc }
+      - { unit_id: MSLH.L,    name: Marshalls }
+      - { unit_id: IBST.L,    name: Ibstock }
+      - { unit_id: TPK.L,     name: Travis Perkins }
+
+  utilities_and_suppliers:
+    expected_sign: ambiguous
+    sign_rationale: >
+      Electrification of heat is a volume gain for power networks and a volume
+      loss for gas supply, and several of these names sit on both sides.
+      National Grid's exposure is regulated capex. Report separately.
+    members:
+      - { unit_id: CNA.L, name: Centrica }
+      - { unit_id: SSE.L, name: SSE }
+      - { unit_id: NG.L,  name: National Grid }
+      - { unit_id: DRX.L, name: Drax }
+
+  residential_landlords:
+    expected_sign: negative
+    sign_rationale: >
+      Minimum-EPC mandates are unfunded capex on an existing portfolio. The
+      Sep-2023 rollback is the mirror image and should carry the opposite
+      sign — the falsification test `expected_direction` exists to support.
+    members:
+      - { unit_id: GRI.L, name: Grainger }
+      - { unit_id: UTG.L, name: Unite Group }
+
+# ---------------------------------------------------------------------------
+# DONOR POOL — global default status.
+# ---------------------------------------------------------------------------
+donors:
+
+  # Tier 1 — international homebuilders and residential developers.
+  # Controls for the global housing cycle and rate sensitivity.
+  international_homebuilders:
+    - { unit_id: DHI, name: D.R. Horton (US) }
+    - { unit_id: LEN, name: Lennar (US) }
+    - { unit_id: PHM, name: PulteGroup (US) }
+    - { unit_id: NVR, name: NVR (US) }
+    - { unit_id: NXI.PA, name: Nexity (FR), verify: true }
+    - { unit_id: VNA.DE, name: Vonovia (DE), verify: true }
+
+  # Tier 1 — international building materials, ex-UK revenue.
+  # Kingspan, Rockwool, Saint-Gobain and Genuit are NOT donors — they are
+  # treated. Verify Owens Corning's UK share before including.
+  international_materials:
+    - { unit_id: OC, name: Owens Corning (US), verify: true }
+    - { unit_id: HOLN.SW, name: Holcim }
+    - { unit_id: HEI.DE, name: Heidelberg Materials }
+    - { unit_id: CX, name: Cemex }
+    - { unit_id: VCT.PA, name: Vicat }
+
+  # Tier 2 — UK domestic cyclicals with no energy-policy channel.
+  uk_domestic_cyclicals:
+    - { unit_id: NXT.L, name: Next }
+    - { unit_id: GRG.L, name: Greggs }
+    - { unit_id: WTB.L, name: Whitbread }
+    - { unit_id: JD.L, name: JD Sports }
+    - { unit_id: RTO.L, name: Rentokil Initial }
+    - { unit_id: BNZL.L, name: Bunzl }
+    - { unit_id: HAS.L, name: Hays, verify: true }
+    - { unit_id: PAGE.L, name: PageGroup }
+
+  # Tier 3 — UK financials. Housebuilders are strongly rate-sensitive, so the
+  # pool needs names loading on UK rates without loading on policy.
+  # Legal & General deliberately omitted — modular-housing and
+  # retrofit-adjacent ventures.
+  uk_financials:
+    - { unit_id: AV.L, name: Aviva }
+    - { unit_id: PRU.L, name: Prudential }
+    - { unit_id: SDR.L, name: Schroders }
+    - { unit_id: STJ.L, name: St James's Place }
+
+  # Event-dependent. Default donor; overridden to treated for commercial-MEES
+  # events. See `event_overrides` below.
+  commercial_property:
+    - unit_id: SGRO.L
+      name: Segro
+      note: >
+        Industrial and logistics REIT. Unexposed to domestic efficiency
+        policy, plausibly exposed to the commercial MEES regime. Its status is
+        therefore event-dependent, which is the defect that motivated the
+        per-event override schema.
+
+# ---------------------------------------------------------------------------
+# EXPLICIT EXCLUSIONS — global default status.
+# These look like donors and are not: each has a plausible UK
+# energy-efficiency or heating-policy revenue channel.
+# ---------------------------------------------------------------------------
+excluded:
+  uk_building_products:
+    - { unit_id: KGF.L,  name: Kingfisher }
+    - { unit_id: HWDN.L, name: Howden Joinery }
+    - { unit_id: FORT.L, name: Forterra }
+    - { unit_id: BREE.L, name: Breedon }
+    - { unit_id: GFTU.L, name: Grafton }
+  insulation_and_heating:
+    - { unit_id: FERG, name: Ferguson }
+  clean_heat_technology:
+    - { unit_id: ITM.L, name: ITM Power, note: opposite-signed exposure }
+    - { unit_id: CWR.L, name: Ceres Power }
+
+# ---------------------------------------------------------------------------
+# PER-EVENT OVERRIDES
+#
+# Applied on top of the global default. `match` selects events by tag or id;
+# `set` assigns a status to named units. Two overrides assigning different
+# statuses to the same unit for the same event is a hard error, not a
+# last-one-wins.
+# ---------------------------------------------------------------------------
+event_overrides:
+
+  - id: commercial_mees_makes_segro_treated
+    match: { event_tags: [commercial_mees, non_domestic_mees] }
+    set:
+      SGRO.L: treated
+    reason: >
+      A minimum-EPC mandate for commercial property is a direct capex
+      obligation on an industrial/logistics portfolio. Segro is exposed, not a
+      control, and leaving it in the donor pool would be an interference
+      violation of exactly the kind the design principle forbids.
+
+  - id: eu_mandate_removes_european_resi
+    match: { event_tags: [eu_efficiency_mandate, epbd, eu_ets] }
+    set:
+      NXI.PA: excluded
+      VNA.DE: excluded
+    reason: >
+      Both are partially TREATED by an EU-level efficiency mandate — Vonovia
+      is a German residential landlord with structurally the same exposure as
+      Grainger. Retaining them as donors biases the estimate toward zero.
+
+  - id: gas_boiler_events_reach_heating_supply
+    match: { event_tags: [boiler_phase_out, heat_pump_subsidy] }
+    set:
+      HWDN.L: excluded
+      KGF.L: excluded
+    reason: >
+      Already excluded globally; restated here so the intent survives any
+      future promotion of these names to the donor pool.
+
+# ---------------------------------------------------------------------------
+# UNRESOLVED — recorded, not guessed.
+# ---------------------------------------------------------------------------
+unresolved:
+  - name: PRS REIT
+    proposed_ticker: PRSR.L
+    checked: 2026-08-15
+    finding: >
+      yfinance returns HTTP 404 "Quote not found for symbol: PRSR.L" and
+      reports the symbol as possibly delisted. PRS REIT was taken private,
+      so no continuing series exists on this source. NOT substituted with a
+      guess and NOT silently dropped: its absence is survivorship bias in the
+      treated set and is disclosed in reports/dose_response.md.
+  - name: Barratt Developments (standalone pre-merger symbol)
+    proposed_ticker: BDEV.L
+    checked: 2026-08-15
+    finding: >
+      Empty; Yahoo serves the history under BTRW.L instead. Handled via the
+      BARRATT_PRE unit rather than a separate fetch.
+  - name: Redrow (standalone pre-merger symbol)
+    proposed_ticker: RDW.L
+    checked: 2026-08-15
+    finding: >
+      Empty; no continuing series. Redrow's standalone pre-merger returns are
+      therefore unavailable from this source and Redrow is absent from the
+      pre-merger treated set.
+
+# ---------------------------------------------------------------------------
+# Market index for the market-model baseline. Not a donor and never in the SC
+# pool: it contains the treated names, so a synthetic control built on it
+# would partly reconstruct the treated unit from itself.
+# ---------------------------------------------------------------------------
+market_index:
+  unit_id: ^FTAS
+  name: FTSE All-Share
+  exchange: ".L"
+
+# ---------------------------------------------------------------------------
+# SCREENING UNIVERSE — for the dose-response design.
+#
+# The dose-response estimand identifies from cross-sectional variation in
+# exposure across ALL UK listed equities, not from a handful of treated names.
+# That universe is several hundred names and cannot be hand-listed here; it is
+# curated in a CSV alongside the event dictionary and validated on load.
+# ---------------------------------------------------------------------------
+screening_universe:
+  path: data/universe/uk_listed_universe.csv
+  min_history_days: 250
+  min_avg_daily_volume_gbp: 250_000    # lower than the SC pool: the
+                                       # dose-response design wants breadth,
+                                       # and a noisy small cap is a valid
+                                       # low-exposure observation rather than
+                                       # a distortion of donor weights
+  note: >
+    Membership must be point-in-time as of each event date (CLAUDE.md §2.4),
+    not today's index. The CSV carries listing and delisting dates for that
+    reason and the loader screens on them per event.
+
+# ---------------------------------------------------------------------------
+# NOTES ENCODED IN THE LOADER
+# ---------------------------------------------------------------------------
+notes:
+  fx: >
+    Do NOT convert donor prices to GBP before computing returns. FX movement
+    on the announcement date would enter the donor returns as spurious
+    treatment effect, since UK policy news moves GBP. Use local-currency
+    returns and include the FX series as a separate diagnostic regressor.
+
+  timezone: >
+    US donors close after the London close. For a UK announcement on day D,
+    the US same-day close already contains the news, while UK names close
+    earlier. Align donors to the UK close: for US and other later-closing
+    markets, use the D-1 close as the contemporaneous observation, or move to
+    a two-day event window. State the convention chosen; do not leave it
+    implicit. This is the single most common silent error in cross-market
+    event studies.
+
+  survivorship: >
+    yfinance does not serve delisted tickers. Any pool built from it is
+    survivorship-biased. Record this as a stated limitation rather than
+    working around it; note which UK mid-caps were acquired or delisted
+    during the sample and are therefore absent. See `unresolved:` above —
+    PRS REIT is a concrete instance in the treated set, not a hypothetical.
+
+  matching_variable: >
+    Match on cumulative returns or a normalised price index over the
+    pre-window, not raw price levels. Fitting levels is trivially easy and
+    almost meaningless. Report pre-treatment fit RMSPE on returns.
+
+  power: >
+    With few treated units, daily equity returns, and a donor pool of this
+    size, power is low. Consider defining ONE treated unit as an
+    equal-weighted portfolio of same-signed exposed names. Run both and
+    compare. NOTE: the Phase 1b power analysis found this insufficient — a
+    20-day MDE of 12-24% cumulative abnormal return — which is why the
+    primary estimand is now dose-response across the screening universe.
+
+  overfitting: >
+    A large donor pool will fit the pre-treatment period well by chance. Keep
+    the pool substantively justified rather than maximal, and report
+    leave-one-donor-out sensitivity as required by CLAUDE.md.

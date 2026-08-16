@@ -2,7 +2,7 @@
 SHELL := /bin/bash
 PY := 3.11
 
-.PHONY: help setup lint fmt test check clean data-check
+.PHONY: help setup lint fmt test check clean data-check events-check universe-check event-report sweep chronology shortlist audit finalise promote
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -27,15 +27,48 @@ fmt:  ## Auto-fix lint and format
 test:  ## Run the test suite with coverage
 	uv run pytest --cov --cov-report=term-missing
 
-check: lint test data-check  ## Everything CI would run
+check: lint test data-check events-check  ## Everything CI would run
 
 data-check:  ## Fail if any data file has been committed (CLAUDE.md hard rule)
-	@tracked=$$(git ls-files data/ | grep -v '\.gitkeep$$' || true); \
+	@# data/events/ is the one sanctioned exception -- the hand-curated event
+	@# dictionary is source, not data. See the note at the top of .gitignore.
+	@tracked=$$(git ls-files data/ \
+		| grep -v '\.gitkeep$$' \
+		| grep -v '^data/events/' \
+		| grep -v '^data/exposure/' \
+		| grep -v '^data/universe/uk_listed_universe\.csv$$' || true); \
 	if [ -n "$$tracked" ]; then \
 		echo "ERROR: data files are tracked in git:"; echo "$$tracked"; exit 1; \
 	else \
-		echo "OK: no data files tracked."; \
+		echo "OK: no data files tracked beyond the event dictionary."; \
 	fi
+
+events-check:  ## Validate the hand-curated event dictionary
+	@uv run python scripts/check_events.py
+
+universe-check:  ## Parse config/universe.yaml and print the clock-alignment table
+	@uv run python scripts/check_universe.py
+
+event-report:  ## Per-event curation view: timing, status resolution, power curve
+	@uv run python scripts/event_report.py
+
+sweep:  ## Sweep gov.uk for candidate announcements (timestamping aid)
+	@uv run python scripts/sweep_govuk.py
+
+chronology:  ## Deductive discovery: walk the policy taxonomy against published chronologies
+	@uv run python scripts/build_chronology.py
+
+shortlist:  ## Filter chronology candidates by rule, before leak checking (Step 2)
+	@uv run python scripts/build_shortlist.py
+
+audit:  ## Completeness audit and deferral hunt over the cached briefing corpus
+	@uv run python scripts/audit_completeness.py
+
+finalise:  ## Apply hand curation, re-check balance, verify dates
+	@uv run python scripts/finalise_shortlist.py
+
+promote:  ## Promote the a-priori inventory into the event dictionary (freeze step)
+	@uv run python scripts/promote_events.py
 
 clean:  ## Remove caches and build artefacts
 	rm -rf .pytest_cache .ruff_cache .mypy_cache build dist *.egg-info htmlcov .coverage

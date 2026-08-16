@@ -1,0 +1,99 @@
+# Miniature universe for tests/test_universe.py. Deliberately mixed across
+# exchanges so the clock-alignment classification has something to classify,
+# and deliberately carrying an aliased unit, an availability bound, an
+# exclusion window and two overrides so per-event resolution is exercised.
+meta:
+  base_currency: GBP
+  return_type: local_currency_simple
+  min_pre_window_days: 50
+  require_full_pre_window: true
+  min_avg_daily_volume_gbp: 1000
+  max_donors: 10
+  alignment: lag_late_markets
+  outcome: cumulative_simple_returns
+  fx_screen_rates_to_gbp:
+    GBP: 1.00
+    GBp: 0.01
+    USD: 0.79
+    EUR: 0.85
+    CHF: 0.89
+    DKK: 0.114
+  exchange_calendars:
+    ".L":  { tz: Europe/London,     close: "16:30", currency: GBp }
+    ".PA": { tz: Europe/Paris,      close: "17:30", currency: EUR }
+    ".CO": { tz: Europe/Copenhagen, close: "17:00", currency: DKK }
+    "":    { tz: America/New_York,  close: "16:00", currency: USD }
+
+treated:
+  exposed_group:
+    expected_sign: positive
+    sign_rationale: test fixture
+    members:
+      - { unit_id: TRT1.L, name: Treated One }
+      - { unit_id: TRT2.L, name: Treated Two }
+      # Aliased pair: one source series, two economically distinct units,
+      # separated by availability bounds. Mirrors BARRATT_PRE / BTRW.L.
+      - unit_id: MERGED_PRE
+        name: Pre-merger unit
+        source_ticker: MERGED.L
+        available_to: 2022-06-30
+      - unit_id: MERGED.L
+        name: Post-merger unit
+        available_from: 2022-07-05
+    exclusion_windows:
+      - unit_id: [MERGED_PRE, MERGED.L]
+        start: 2022-05-01
+        end: 2022-09-30
+        reason: merger completion and index rebalancing
+
+  other_group:
+    expected_sign: negative
+    sign_rationale: test fixture
+    members:
+      - { unit_id: TRT3.L, name: Treated Three }
+
+donors:
+  uk:
+    - { unit_id: DON1.L, name: Donor One }
+    - { unit_id: DON2.L, name: Donor Two }
+  overseas:
+    - { unit_id: USDON,    name: US donor }      # closes 4.5h after London -> LATE
+    - { unit_id: EUDON.PA, name: Euronext donor } # simultaneous -> ALIGNED
+    - { unit_id: DKDON.CO, name: Copenhagen donor } # 30m before -> EARLY
+  event_dependent:
+    - { unit_id: FLIP.L, name: Flips to treated on one tag }
+
+excluded:
+  banned:
+    - { unit_id: BANNED.L, name: Banned }
+
+event_overrides:
+  - id: flip_to_treated
+    match: { event_tags: [special_regime] }
+    set: { FLIP.L: treated }
+    reason: exposed under this regime, so not a valid control
+
+  - id: drop_euro_donor
+    match: { event_tags: [eu_mandate] }
+    set: { EUDON.PA: excluded }
+    reason: partially treated by an EU-level mandate
+
+  - id: match_by_event_id
+    match: { event_ids: [SPECIFIC-EVENT] }
+    set: { DON2.L: excluded }
+    reason: exercises event_id matching rather than tag matching
+
+market_index:
+  unit_id: ^IDX
+  name: Test index
+  exchange: ".L"
+
+unresolved:
+  - name: Gone Plc
+    proposed_ticker: GONE.L
+    checked: 2026-08-15
+    finding: delisted; no continuing series
+
+notes:
+  fx: local currency only
+  timezone: lag late markets

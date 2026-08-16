@@ -1,0 +1,603 @@
+# A-priori policy inventory — vintage 2026-08-16
+#
+# Hand-written from the policy record BEFORE consulting the generated
+# shortlist, so that the sweep can be scored against it. See the companion
+# `inventory_apriori_2026-08-16.md` for the diff, the leak-risk ranking and
+# the sources.
+#
+# date_grade:
+#   A  exact day from a primary or near-primary source. Usable.
+#   B  day near-certain but from secondary reporting of a primary act.
+#      Confirm through events.govuk.first_publication before use.
+#   C  month only. NOT usable until resolved.
+#
+# scheduled: true means the date was known long in advance (a commencement).
+# Keep these. Per Rule 0, dropping events with no expected reaction is
+# selection on the dependent variable.
+#
+# direction is at the POLICY level (tighten / loosen). channel_sign in
+# config/exposure.yaml converts it to a firm-level sign.
+
+meta:
+  vintage: "2026-08-16"
+  method: hand-written a-priori, then date-verified against primary sources
+  sample_floor: "2013-01-01"
+  count: 49
+
+events:
+
+  - id: green-deal-eco1-launch
+    date: 2013-01-28
+    date_grade: B
+    family: eco
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    scheduled: true
+    title: Green Deal opens to consumers; ECO1 live
+    leak_risk: low
+
+  - id: green-levies-rollback-2013
+    date: 2013-12-02
+    date_grade: B
+    family: eco
+    stage: target_change
+    direction: loosen
+    channel_targets: [product_revenue]
+    title: Green levies package — ECO1 scaled back and extended to 2017
+    alt_dates: ["2013-12-05"]  # Autumn Statement restatement
+    leak_risk: high
+    note: >
+      Two candidate formal dates and heavy trailing through November 2013.
+      Resolve or drop; do not pick.
+
+  - id: mees-2015-regs-made
+    date: 2015-03-??
+    date_grade: C
+    family: mees_domestic
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [residential_stock]
+    title: Energy Efficiency (Private Rented Property) (E&W) Regulations 2015 made
+    needs: laying date from legislation.gov.uk
+
+  - id: zero-carbon-homes-cancelled
+    date: 2015-07-10
+    date_grade: A
+    family: future_homes
+    stage: scheme_closure
+    direction: loosen
+    channel_targets: [delivered_stock]
+    title: "Fixing the Foundations — zero carbon homes and allowable solutions dropped"
+    leak_risk: medium
+    resolves: shortlist_manual.yaml `zero-carbon-homes-cancelled` (was month-unknown)
+
+  - id: green-deal-funding-ended
+    date: 2015-07-23
+    date_grade: A
+    family: eco
+    stage: scheme_closure
+    direction: loosen
+    channel_targets: [product_revenue]
+    title: Green Deal Finance Company funding ended; GDHIF closed
+    leak_risk: low
+    missing_from_sweep: true
+
+  - id: mees-landlord-guidance
+    date: 2017-10-01
+    date_grade: A
+    family: mees_domestic
+    stage: guidance
+    direction: tighten
+    channel_targets: [residential_stock]
+    title: MEES landlord guidance first published
+    note: >
+      The known API trap — gov.uk search API reports 2026-05-05 for this page.
+      Weak as an event: guidance, not a decision.
+
+  - id: mees-band-e-in-force
+    date: 2018-04-01
+    date_grade: A
+    family: mees_domestic
+    stage: commencement
+    direction: tighten
+    channel_targets: [residential_stock]
+    scheduled: true
+    title: MEES band E in force for new tenancies
+
+  - id: mees-3500-cap-laid
+    date: 2018-11-??
+    date_grade: C
+    family: mees_domestic
+    stage: scheme_amendment
+    direction: tighten
+    channel_targets: [residential_stock]
+    title: £3,500 landlord cost cap replaces "no cost to landlord"
+    needs: laying date from legislation.gov.uk
+    note: First time MEES imposed real landlord capex.
+
+  - id: eco3-order
+    date: 2018-11-??
+    date_grade: C
+    family: eco
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: ECO3 Order made (scheme starts 2018-12-03)
+    note: >
+      Sweep row 7 dates this September 2018 from a scheme-duration sentence.
+      The event is the Order date, not the start date.
+
+  - id: fhs-2019-consultation
+    date: 2019-10-01
+    time_known: "12:00 Europe/London"
+    date_grade: A
+    family: future_homes
+    stage: consultation
+    direction: tighten
+    channel_targets: [delivered_stock]
+    title: Future Homes Standard 2019 consultation opens (Part L / Part F)
+    leak_risk: low
+
+  - id: ghg-announced
+    date: 2020-07-08
+    time_known: "~12:30 Europe/London"
+    date_grade: A
+    family: green_homes_grant
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: "Summer Economic Update — Green Homes Grant announced, £2bn"
+    leak_risk: medium
+    note: Fiscal statement, intraday. [0,1] is the honest window.
+
+  - id: ghg-lad-launch
+    date: 2020-08-??
+    date_grade: C
+    family: green_homes_grant
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: GHG Local Authority Delivery, £500m
+
+  - id: ghg-vouchers-open
+    date: 2020-09-30
+    date_grade: B
+    family: green_homes_grant
+    stage: commencement
+    direction: tighten
+    channel_targets: [product_revenue]
+    scheduled: true
+    title: GHG voucher scheme opens for applications
+
+  - id: ten-point-plan
+    date: 2020-11-18
+    date_grade: A
+    family: boiler_phase_out
+    stage: strategy
+    direction: tighten
+    channel_targets: [product_revenue, delivered_stock]
+    title: Ten Point Plan for a Green Industrial Revolution
+    leak_risk: medium
+    note: Embargoed release, overnight — day 0 is clean.
+
+  - id: sr2020-ghg-extended
+    date: 2020-11-25
+    date_grade: B
+    family: green_homes_grant
+    stage: scheme_amendment
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: "Spending Review 2020 — GHG extended to March 2022"
+    leak_risk: medium
+
+  - id: fhs-2019-response
+    date: 2021-01-19
+    date_grade: B
+    family: future_homes
+    stage: scheme_amendment
+    direction: tighten
+    channel_targets: [delivered_stock]
+    title: Government response to FHS 2019 consultation; Part L interim uplift confirmed
+
+  - id: ghg-vouchers-closed
+    date: 2021-03-27
+    time_known: "17:00 Europe/London (Saturday)"
+    date_grade: A
+    family: green_homes_grant
+    stage: scheme_closure
+    direction: loosen
+    channel_targets: [product_revenue]
+    title: GHG voucher scheme closed to new applications
+    leak_risk: low
+    missing_from_sweep: true
+    note: >
+      Best-shaped event in the list. Announced 17:00 Saturday, so t0 is the
+      Monday 2021-03-29 open and the whole reaction sits in one session.
+
+  - id: eco4-consultation
+    date: 2021-07-20
+    time_known: "10:00 Europe/London"
+    date_grade: A
+    family: eco
+    stage: consultation
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: ECO4 consultation opens
+
+  - id: shdf-wave1
+    date: 2021-08-??
+    date_grade: C
+    family: warm_homes
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: Social Housing Decarbonisation Fund Wave 1, £179m
+
+  - id: heat-and-buildings-strategy
+    date: 2021-10-19
+    date_grade: A
+    family: heat_buildings_strategy
+    stage: strategy
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: Heat and Buildings Strategy; Boiler Upgrade Scheme announced
+    leak_risk: high
+
+  - id: part-l-2021-published
+    date: 2021-12-15
+    date_grade: A
+    family: future_homes
+    stage: scheme_amendment
+    direction: tighten
+    channel_targets: [delivered_stock]
+    title: Part L 2021 Approved Documents published (31% uplift)
+    leak_risk: low
+    note: Largest single regulatory cost step on housebuilders in the sample.
+
+  - id: vat-zero-rate-esm
+    date: 2022-03-23
+    time_known: "~12:30 Europe/London"
+    date_grade: A
+    family: fiscal_events
+    stage: scheme_amendment
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: "Spring Statement — VAT zero-rated on energy saving materials"
+    leak_risk: medium
+    missing_from_sweep: true
+
+  - id: eco4-starts
+    date: 2022-04-01
+    date_grade: A
+    family: eco
+    stage: commencement
+    direction: tighten
+    channel_targets: [product_revenue]
+    scheduled: true
+    title: ECO4 measures start
+
+  - id: energy-security-strategy
+    date: 2022-04-07
+    date_grade: A
+    family: heat_buildings_strategy
+    stage: strategy
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: British Energy Security Strategy
+
+  - id: bus-opens
+    date: 2022-05-23
+    date_grade: A
+    family: boiler_upgrade
+    stage: commencement
+    direction: tighten
+    channel_targets: [product_revenue]
+    scheduled: true
+    title: Boiler Upgrade Scheme opens
+
+  - id: part-l-2021-in-force
+    date: 2022-06-15
+    date_grade: A
+    family: future_homes
+    stage: commencement
+    direction: tighten
+    channel_targets: [delivered_stock]
+    scheduled: true
+    title: Part L 2021 in force
+
+  - id: as2022-eco-plus
+    date: 2022-11-17
+    time_known: "~12:30 Europe/London"
+    date_grade: A
+    family: gbis
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: "Autumn Statement 2022 — ECO+ announced, £1bn"
+    leak_risk: medium
+    missing_from_sweep: true
+
+  - id: eco-plus-consultation
+    date: 2022-11-28
+    date_grade: A
+    family: gbis
+    stage: consultation
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: ECO+ consultation opens
+
+  - id: gbis-confirmed
+    date: 2023-03-??
+    date_grade: C
+    family: gbis
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: ECO+ renamed Great British Insulation Scheme; design confirmed
+    note: Sweep has April 2023 — that is the launch, not the decision.
+
+  - id: shdf-wave21-awards
+    date: 2023-03-22
+    date_grade: B
+    family: warm_homes
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: SHDF Wave 2.1 awards announced, £778m
+
+  - id: whitby-hydrogen-cancelled
+    date: 2023-07-1?
+    date_grade: C
+    family: boiler_phase_out
+    stage: scheme_closure
+    direction: loosen
+    channel_targets: [product_revenue]
+    title: Whitby hydrogen village trial cancelled
+    missing_from_sweep: true
+    note: Narrow channel — hydrogen-ready boiler makers only.
+
+  - id: net-zero-rollback-2023
+    date: 2023-09-19
+    time_known: "evening (leak); formal statement 2023-09-20"
+    formal_date: 2023-09-20
+    date_grade: A
+    family: [mees_domestic, boiler_phase_out, boiler_upgrade]
+    stage: target_change
+    direction: loosen
+    channel_targets: [residential_stock, product_revenue]
+    leak_risk: confirmed
+    title: >
+      Net zero package — PRS EPC C requirement scrapped, off-grid boiler
+      phase-out moved 2026 to 2035, exemptions, BUS raised to £7,500
+    supersedes:
+      - sep2023-mees-epc-c-scrapped
+      - sep2023-boiler-phaseout-delayed
+      - sep2023-boiler-exemptions
+      - "shortlist_final row 1"
+    note: >
+      ONE event, not four. The substance broke on the evening of Tuesday
+      19 September and the leak is why the speech was brought forward, so the
+      information was public before the 20th opened. Landlords and insulation
+      manufacturers take opposite signs — the most informative shape available.
+
+  - id: bus-7500-in-force
+    date: 2023-10-23
+    date_grade: A
+    family: boiler_upgrade
+    stage: commencement
+    direction: tighten
+    channel_targets: [product_revenue]
+    scheduled: true
+    title: BUS grant uplift to £7,500 takes effect
+    note: Consequence of net-zero-rollback-2023. Not an independent event.
+
+  - id: fhbs-2023-consultation
+    date: 2023-12-13
+    time_known: sitting day (WMS HCWS119)
+    date_grade: A
+    family: future_homes
+    stage: consultation
+    direction: tighten
+    channel_targets: [delivered_stock]
+    title: Future Homes and Buildings Standards 2023 consultation launched
+    leak_risk: low
+
+  - id: redcar-hydrogen-cancelled
+    date: 2023-12-14
+    date_grade: B
+    family: boiler_phase_out
+    stage: scheme_closure
+    direction: loosen
+    channel_targets: [product_revenue]
+    title: Redcar hydrogen village not proceeding
+    missing_from_sweep: true
+
+  - id: chmm-delayed
+    date: 2024-03-14
+    time_known: sitting day (WMS HCWS341)
+    date_grade: A
+    family: boiler_upgrade
+    stage: target_change
+    direction: loosen
+    channel_targets: [product_revenue]
+    title: Clean Heat Market Mechanism delayed to April 2025
+    leak_risk: low
+    resolves: shortlist_manual.yaml `mar2024-chmm-delayed` (was month-only)
+    note: >
+      The boiler manufacturers' obligation. Cleanest single-name shock to the
+      product_revenue channel in the sample.
+
+  - id: autumn-budget-2024
+    date: 2024-10-30
+    time_known: "~12:30 Europe/London"
+    date_grade: A
+    family: fiscal_events
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: "Autumn Budget 2024 — £3.4bn Warm Homes Plan; £1.29bn social housing fund"
+    leak_risk: medium
+    missing_from_sweep: true
+
+  - id: epc-reform-consultation
+    date: 2024-12-04
+    date_grade: A
+    family: epc_regime
+    stage: consultation
+    direction: tighten
+    channel_targets: [residential_stock]
+    title: Reforms to the Energy Performance of Buildings regime — consultation
+    leak_risk: low
+
+  - id: prs-mees-epc-c-reinstated
+    date: 2025-02-07
+    date_grade: A
+    family: mees_domestic
+    stage: consultation
+    direction: tighten
+    channel_targets: [residential_stock]
+    title: "Improving the energy performance of privately rented homes: 2025 update"
+    leak_risk: low
+    missing_from_sweep: true
+    pairs_with: net-zero-rollback-2023
+    note: >
+      The mirror image of the September 2023 rollback: same channel, opposite
+      sign, 17 months apart. The most valuable pairing in the study, and the
+      sweep did not have it.
+
+  - id: whsf-wave3-awards
+    date: 2025-03-??
+    date_grade: C
+    family: warm_homes
+    stage: scheme_launch
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: Warm Homes Social Housing Fund Wave 3 awards
+
+  - id: hug-ends
+    date: 2025-03-31
+    date_grade: A
+    family: warm_homes
+    stage: scheme_closure
+    direction: loosen
+    channel_targets: [product_revenue]
+    scheduled: true
+    title: Home Upgrade Grant ends
+
+  - id: spending-review-2025
+    date: 2025-06-11
+    time_known: "~12:30 Europe/London"
+    date_grade: A
+    family: fiscal_events
+    stage: scheme_amendment
+    direction: tighten
+    channel_targets: [product_revenue]
+    title: "Spending Review 2025 — £13.2bn Warm Homes Plan confirmed to 2029-30"
+    leak_risk: medium
+    missing_from_sweep: true
+    note: Outcome was in genuine doubt beforehand — real surprise content.
+
+  - id: dhs-and-social-mees-consultations
+    date: 2025-07-02
+    date_grade: A
+    family: [decent_homes, mees_domestic]
+    stage: consultation
+    direction: tighten
+    channel_targets: [residential_stock]
+    title: Reformed Decent Homes Standard and social rented MEES consultations
+    leak_risk: low
+    missing_from_sweep: true
+    note: Two instruments, one day. One event row.
+
+  - id: budget-2025-eco-abolished
+    date: 2025-11-26
+    time_known: "~12:30 Europe/London"
+    date_grade: A
+    family: [eco, gbis, fiscal_events]
+    stage: scheme_closure
+    direction: loosen
+    channel_targets: [product_revenue]
+    title: >
+      Budget 2025 — ECO abolished from 2026-03-31; £2.3bn of levies moved to
+      the Exchequer; ~£150 off household bills
+    leak_risk: high
+    supersedes:
+      - eco4-funding-stopped
+      - "shortlist_final row 23"
+      - "shortlist_final row 24"
+    note: >
+      The sweep dates this March 2026 — its EFFECT date. Five-month error on
+      the largest demand shock to insulation installers in the sample. Budget
+      measures are routinely pre-briefed; if disclosure was gradual the row is
+      unusable and should be dropped with a stated reason.
+
+  - id: warm-homes-plan
+    date: 2026-01-21
+    date_grade: A
+    family: [warm_homes, mees_domestic, epc_regime]
+    stage: strategy
+    direction: tighten
+    channel_targets: [residential_stock, product_revenue]
+    title: >
+      Warm Homes Plan (£15bn) + PRS MEES government response (EPC C by
+      2030-10-01, £10k cost cap) + EPC regime partial response
+    leak_risk: medium
+    supersedes: ["shortlist_final row 21"]
+    note: Three documents, one day. One event row.
+
+  - id: social-mees-response
+    date: 2026-01-28
+    date_grade: A
+    family: mees_domestic
+    stage: target_change
+    direction: tighten
+    channel_targets: [residential_stock]
+    title: Social rented sector MEES — EPC C or equivalent by 2030-04-01
+    leak_risk: low
+    note: >
+      Hits registered providers and their contractors, not listed landlords.
+      Check exposure loads on any name in the universe before keeping.
+
+  - id: future-homes-standard-2026
+    date: 2026-03-24
+    date_grade: A
+    family: future_homes
+    stage: target_change
+    direction: mixed
+    channel_targets: [delivered_stock, product_revenue]
+    direction_by_channel:
+      delivered_stock: loosen   # implementation delayed to 2028
+      product_revenue: tighten  # solar mandate, heat pumps
+    title: >
+      Future Homes Standard published — implementation delayed to 2028;
+      75% emissions cut, solar ≥40% of floor area, heat pumps; in force
+      2027-03-24 with a 12-month transition
+    leak_risk: medium
+    supersedes: [hem-delayed-2026]
+    note: >
+      Opposite-signed across two channels under one shock. Also dates the HEM
+      delay, which shortlist_manual.yaml could only place at "early 2026".
+
+  - id: eco4-gbis-end
+    date: 2026-03-31
+    date_grade: A
+    family: [eco, gbis]
+    stage: commencement
+    direction: loosen
+    channel_targets: [product_revenue]
+    scheduled: true
+    title: ECO4 and GBIS end
+    note: >
+      Consequence of budget-2025-eco-abolished. NOT an independent event.
+
+  - id: bill-cut-in-force
+    date: 2026-04-01
+    date_grade: A
+    family: fiscal_events
+    stage: commencement
+    direction: null
+    channel_targets: []
+    scheduled: true
+    title: £150 bill cut takes effect
+    note: Consequence of budget-2025-eco-abolished. Not an event; listed for completeness.

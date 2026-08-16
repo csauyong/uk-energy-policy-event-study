@@ -1,0 +1,117 @@
+# Outcomes of the leak searches and the timeboxed C-grade resolution.
+#
+# Kept separate from `inventory_apriori_2026-08-16.yaml` rather than edited
+# into it: the inventory is the hand-written a-priori list, and its value as a
+# scoring benchmark depends on it staying as written. Merge deliberately.
+
+meta:
+  vintage: 2026-08-16
+  leak_protocol: "decision_log.md, pre-committed before any article was read"
+  executed_with_deviation: true
+
+leak_searches:
+  - id: net-zero-rollback-2023
+    outcome: keep, t0 moved
+    formal_date: 2023-09-20
+    t0_date: 2023-09-19
+    finding: >
+      The speech was brought forward to the afternoon of 20 September as a
+      result of the plans leaking to the BBC late on the evening of Tuesday 19
+      September. One credible outlet, one identifiable date, with specifics:
+      meets the pre-committed keep-and-move rule.
+    sources:
+      - https://www.carbonbrief.org/in-depth-qa-what-do-rishi-sunaks-u-turns-mean-for-uk-climate-policy/
+      - https://feeds.bbci.co.uk/news/live/uk-politics-66872792?page=3
+
+  - id: green-levies-rollback-2013
+    outcome: DROP
+    finding: >
+      Gradual disclosure across four dates with escalating specificity: a
+      24 October U-turn report, late-November coverage of suppliers
+      conditioning price rises on levies falling, a 29 November No.10 briefing
+      confirming rollback with measures to follow at the Autumn Statement, and
+      the package itself. Independently, the formal date is ambiguous between
+      2 and 5 December. The pre-committed >=3-dates rule fires.
+    sources:
+      - https://www.pressreader.com/uk/daily-express/20131024/281676842650779
+      - https://feeds.bbci.co.uk/news/business-24915128
+      - https://gov.uk/government/news/press-briefing-morning-29-november-2013
+      - https://www.carbonbrief.org/a-summary-of-green-levy-reforms-in-the-chancellors-autumn-statement/
+    note: >
+      This is the pre-commitment working. The rule was written before any
+      article was read and it deleted a row that would otherwise have been
+      argued about on its merits.
+
+  - id: budget-2025-eco-abolished
+    outcome: keep at formal date, WITH pre-registered sensitivity
+    formal_date: 2025-11-26
+    finding: >
+      Pre-Budget reporting exists but on a different figure (£170, framed as
+      "considers") rather than on the ECO mechanism. For a product_revenue
+      dose the substance is the abolition, not the headline bill number, and
+      those are different pieces of information. No dated disclosure of the
+      mechanism was found.
+    sensitivity: >
+      "Nothing found" cannot carry full weight when the pre-committed outlets
+      were unreachable. Estimate twice -- once at 2025-11-26, once excluding
+      the event -- and report both. Converts an unresolvable evidence problem
+      into a stated robustness result.
+    sources:
+      - https://www.carbonbrief.org/uk-budget-2025-key-climate-and-energy-announcements/
+      - https://www.gbnews.com/money/budget-rachel-reeves-energy-bills
+
+  - id: heat-buildings-strategy
+    outcome: keep at formal date; 18-vs-19 October discrepancy resolved
+    finding: >
+      No dated prior disclosure found in the committed sources; the row 20
+      search returned almost entirely trade press, which the protocol
+      excludes. The 18 October date in trade coverage is the embargoed
+      briefing, not publication.
+    resolved_timestamp: 2021-10-19T12:05:00+00:00
+    resolved_local: 2021-10-19T13:05:00+01:00
+    resolution_source: "gov.uk content API change_history, 'First published.'"
+    t0_note: >
+      13:05 London is mid-session, so 19 October STRADDLES and t0 is
+      20 October under the first-clean-close convention.
+
+c_grade_resolution:
+  - id: mees-2015-regs-made
+    outcome: RESOLVED
+    date: 2015-03-26
+    grade: A
+    instrument: >
+      The Energy Efficiency (Private Rented Property) (England and Wales)
+      Regulations 2015, SI 2015/962 -- made 26 March 2015.
+    source: https://www.legislation.gov.uk/uksi/2015/962/introduction/made
+
+  - id: mees-3500-cap-laid
+    outcome: NOT RESOLVED within timebox
+    finding: >
+      The draft laid in 2018 is titled "...(Amendment) Regulations 2018" and
+      became SI 2019/595 "...(Amendment) Regulations 2019" when made on
+      15 March 2019, in force 1 April 2019. legislation.gov.uk carries the
+      made date but not the 2018 laying date, and the gov.uk content API
+      returned no announcement page for the £3,500 cap.
+    options_for_the_curator:
+      - "Exclude: month-only, day not establishable from primary source."
+      - >
+        Re-date to the made instrument, 2019-03-15 (SI 2019/595). This is a
+        different event from the one the inventory intended: the draft laying
+        in 2018 is when the cap became public, and the made date is a
+        formality after approval. Re-dating would move the event roughly four
+        months later than the information.
+    source: https://www.legislation.gov.uk/uksi/2019/595/introduction/made
+
+  - ids_not_attempted:
+      - eco3-order
+      - ghg-lad-launch
+      - shdf-wave1
+      - gbis-confirmed
+      - whitby-hydrogen-cancelled
+      - whsf-wave3-awards
+    rationale: >
+      Six of the eight remaining C grades are `tighten` on `product_revenue`,
+      which carries 22 instruments and is not the binding side. Marginal value
+      is close to zero. Timeboxed and, if unresolved, excluded by the stated
+      rule: "month-only, day not establishable from primary source" -- which
+      is a rule, not a gap.

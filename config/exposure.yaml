@@ -1,0 +1,139 @@
+# config/exposure.yaml
+#
+# How a firm's policy exposure is scored. Pre-registered: this file is fixed
+# before estimation and any change to it is a new specification with a row in
+# reports/decision_log.md.
+#
+# THE SIGN CONVENTION IS THE LOAD-BEARING CHOICE HERE.
+#
+# The dose-response regression is CAR_ie = a_e + b * Exposure_ie + ... If
+# exposure were an unsigned magnitude, an insulation maker that gains and a
+# residential landlord that loses from the *same* mandate would both score
+# high, b would average their opposite responses toward zero, and a null would
+# be uninterpretable. Exposure is therefore SIGNED:
+#
+#     exposure_signed = magnitude * channel_sign * event_direction
+#
+# where `magnitude` in [0, 1] is the fraction of the firm's business the policy
+# touches, `channel_sign` is the sign of the firm's payoff under a TIGHTENING,
+# and `event_direction` is +1 for a tightening and -1 for a loosening. The
+# unsigned magnitude is retained as `exposure_magnitude` so an unsigned
+# specification can be run as a robustness check.
+
+meta:
+  # EPC bands, best to worst. Used to compute "share of stock below the
+  # mandated band", which is the dose for the stock-based channels.
+  epc_bands: [A, B, C, D, E, F, G]
+
+  # Winsorise the magnitude before standardising. A firm with a 100% exposed
+  # revenue line is real; a data error that produces 300% is not, and one
+  # extreme leverage point drives the whole regression.
+  winsorise_quantiles: [0.00, 0.99]
+
+  # Firms with no exposure record score zero EXPLICITLY. `notes.zero_is_data`.
+  default_magnitude: 0.0
+
+  # Decile rank variant. 10 buckets, ties averaged.
+  rank_buckets: 10
+
+channels:
+
+  residential_stock:
+    description: >
+      Residential landlords and REITs. Dose is the dwelling-weighted share of
+      the held portfolio sitting BELOW the band the policy mandates: that is
+      the fraction of the portfolio requiring capex, which is the economically
+      meaningful quantity rather than portfolio size.
+    magnitude: share_of_stock_below_mandated_band
+    stock_attribute_prefix: dwellings_band_
+    channel_sign: -1
+    sign_rationale: >
+      A minimum-EPC mandate is unfunded capex on an existing portfolio.
+      Unambiguous.
+
+  delivered_stock:
+    description: >
+      Housebuilders. Dose combines the band profile of delivered stock with
+      the distance between the firm's current build standard and the standard
+      the policy mandates. A builder already delivering to the mandated
+      standard has zero dose however large it is.
+    magnitude: share_of_delivered_below_mandated_band
+    stock_attribute_prefix: delivered_units_band_
+    standard_attribute: build_standard_band
+    channel_sign: -1
+    sign_ambiguous: true
+    sign_rationale: >
+      AMBIGUOUS AND FLAGGED. Tightening raises build cost per unit, which is
+      the -1. But incumbent volume builders absorb compliance cost better than
+      small builders and have historically passed it through, which argues +1.
+      config/universe.yaml records this group as `ambiguous` and the report is
+      required to run the sign-flip sensitivity in
+      docs/exposure_construction.md rather than assert the default.
+
+  product_revenue:
+    description: >
+      Building products, insulation, heating, glazing, ventilation. Dose is
+      the revenue share in the affected product categories multiplied by the
+      UK revenue share -- a firm with a large insulation business and no UK
+      revenue has no UK policy exposure.
+    magnitude: affected_revenue_share_times_uk_share
+    revenue_attribute_prefix: revenue_share_
+    uk_share_attribute: uk_revenue_share
+    channel_sign: +1
+    sign_rationale: >
+      Direct demand channel: mandates and retrofit subsidy create demand for
+      fabric and heating products. The cleanest sign in the universe.
+
+  domestic_supply:
+    description: >
+      Utilities and energy retail. Dose is the domestic (household) supply
+      share, since heating policy reaches these firms through household demand
+      rather than through a product line.
+    magnitude: domestic_supply_share
+    supply_attribute: domestic_supply_share_gb
+    channel_sign: 0
+    sign_ambiguous: true
+    sign_rationale: >
+      AMBIGUOUS AND SET TO ZERO BY DEFAULT. Electrification of heat is a volume
+      gain for power networks and a volume loss for gas supply, and several of
+      these firms sit on both sides; National Grid's exposure is regulated
+      capex, which responds to mandated investment rather than to retail
+      demand. A channel whose sign cannot be signed ex ante contributes no
+      information to a signed dose-response test, and a guessed sign would
+      contribute noise dressed as signal. These firms therefore enter the
+      regression with exposure zero by default and are analysed separately.
+      The sensitivity run in docs/exposure_construction.md assigns +1 and -1
+      and reports both.
+
+# ---------------------------------------------------------------------------
+# Firms not matched to any channel score zero. This is a DATA POINT, not a
+# missing value -- see notes.zero_is_data.
+# ---------------------------------------------------------------------------
+notes:
+  zero_is_data: >
+    Most of the several-hundred-name screening universe has no exposure to UK
+    energy-efficiency policy and scores exactly zero. Those firms are the
+    identification: they pin down the event fixed effect a_e, absorbing the
+    common market move on the announcement date, so that b is estimated from
+    the cross-sectional gradient rather than from a before-after comparison.
+    A zero is therefore recorded explicitly and is never dropped as missing.
+    A firm whose exposure is genuinely UNKNOWN is a different thing and is
+    excluded with a reason, because a false zero is a measurement error that
+    attenuates b toward zero.
+
+  point_in_time: >
+    Every attribute carries `knowable_from`. The builder rejects any attribute
+    whose `knowable_from` is later than the event's announcement timestamp.
+    This is the rule that stops a firm's post-event portfolio disclosure --
+    published precisely because the policy changed -- from entering its
+    pre-event exposure score. Annual-report attributes are typically knowable
+    from the publication date, not the balance-sheet date, and the gap is
+    often four months.
+
+  functional_form: >
+    `exposure_continuous` is the standardised signed score; `exposure_rank` is
+    its decile rank. The rank variant exists because the mapping from EPC band
+    profile to economic dose is a judgement call, and a monotone but
+    misspecified scoring function still produces the right ranking. If the two
+    variants disagree, the scoring function's shape is doing the work and the
+    result should be read as fragile.
