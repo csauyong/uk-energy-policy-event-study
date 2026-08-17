@@ -106,6 +106,27 @@ if TYPE_CHECKING:  # pragma: no cover - import cost only
 
 YFINANCE_CACHE: Final[Path] = RAW_DIR / "yfinance"
 
+
+class PriceSourceUnreachableError(RuntimeError):
+    """The price source could not be reached at all.
+
+    Distinct from "the symbol returned no rows", and the distinction is not
+    pedantic. Under a blocked egress route yfinance does not raise on every
+    path: it logs a transport failure, returns an EMPTY frame, and emits
+    ``$TICKER: possibly delisted; no timezone found``. A caller that treats
+    empty as delisting will then be told that Grainger and Genuit have
+    delisted, which is false, and will go looking for a corporate action that
+    never happened.
+
+    That failure mode is especially dangerous in this project, because
+    ``config/universe.yaml`` deliberately contains names that *genuinely* were
+    delisted inside the sample (`PRSR.L`, `CSH.L`). A connectivity fault and a
+    real delisting are indistinguishable from a single empty frame, so they
+    are separated here by looking at the batch: if nothing at all came back,
+    the network is the explanation, not thirty simultaneous delistings.
+    """
+
+
 #: Columns `fetch_prices` guarantees on every returned frame. `close_auto_adj`
 #: is Yahoo's own back-adjusted series, stored alongside the raw close so the
 #: AUTO_ADJUST comparison uses Yahoo's convention rather than a guess at it.
@@ -374,6 +395,8 @@ def fetch_prices(
 
     YFINANCE_CACHE.mkdir(parents=True, exist_ok=True)
     frames: dict[str, pd.DataFrame] = {}
+    empty_tickers: list[str] = []
+    fetched_live = 0  # tickers that hit the network AND came back with rows
 
     for ticker in tickers:
         cached = _cache_path(ticker, vintage)
@@ -382,13 +405,23 @@ def fetch_prices(
             continue
 
         handle = yfinance.Ticker(ticker)
-        raw = handle.history(
-            start=start.date().isoformat(),
-            end=end.date().isoformat(),
-            interval="1d",
-            auto_adjust=False,  # see module docstring: adjust offline, forward only
-            actions=True,
-        )
+        try:
+            raw = handle.history(
+                start=start.date().isoformat(),
+                end=end.date().isoformat(),
+                interval="1d",
+                auto_adjust=False,  # see module docstring: adjust offline, forward only
+                actions=True,
+            )
+        # Broad by design: yfinance surfaces transport failures as whatever
+        # the underlying HTTP stack raised, and none of it is a typed API.
+        except Exception as exc:
+            msg = (
+                f"could not reach the price source while fetching {ticker!r}: "
+                f"{type(exc).__name__}: {exc}. This is a transport failure, "
+                "NOT evidence about the symbol."
+            )
+            raise PriceSourceUnreachableError(msg) from exc
         # RETROACTIVE-ADJUSTMENT: this second series is Yahoo's back-adjusted
         # close. Every value in it may be rewritten by a corporate action
         # dated later than the value itself. Stored for the labelled
@@ -401,13 +434,10 @@ def fetch_prices(
             actions=False,
         )
         if raw.empty:
-            msg = (
-                f"yfinance returned no rows for {ticker!r} over "
-                f"{start.date()}..{end.date()}. Verify the symbol is current: "
-                "config/universe.yaml warns that several UK mid-caps were "
-                "acquired or delisted during the sample"
-            )
-            raise ValueError(msg)
+            # Defer the verdict. An empty frame alone cannot distinguish a
+            # delisted symbol from a blocked route; only the batch can.
+            empty_tickers.append(ticker)
+            continue
 
         frame = pd.DataFrame(
             {
@@ -426,6 +456,29 @@ def fetch_prices(
         frame.index.name = "date"
         frame.to_parquet(cached)
         frames[ticker] = frame
+        fetched_live += 1
+
+    if empty_tickers:
+        if fetched_live == 0:
+            msg = (
+                f"every live fetch returned an empty frame "
+                f"({len(empty_tickers)} of {len(tickers)} tickers: "
+                f"{', '.join(empty_tickers)}). Nothing reached the source, so "
+                "this is a transport or egress failure and says NOTHING about "
+                "whether any of these symbols is current. Do not go looking "
+                "for delistings on the strength of this message."
+            )
+            raise PriceSourceUnreachableError(msg)
+        msg = (
+            f"the source returned no rows for {empty_tickers} over "
+            f"{start.date()}..{end.date()}, while {fetched_live} other "
+            "ticker(s) fetched normally, so the route is fine and these "
+            "symbols are the problem. Verify each against "
+            "config/universe.yaml: several UK mid-caps were acquired or "
+            "delisted inside the sample and need a `listed_to` window rather "
+            "than a live symbol."
+        )
+        raise ValueError(msg)
 
     return frames
 

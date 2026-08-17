@@ -70,6 +70,9 @@ finalise:  ## Apply hand curation, re-check balance, verify dates
 promote:  ## Promote the a-priori inventory into the event dictionary (freeze step)
 	@uv run python scripts/promote_events.py
 
+prices:  ## Pull and cache daily history for every named unit (acquisition only; Rule 0 firewall)
+	@uv run python scripts/pull_prices.py
+
 clean:  ## Remove caches and build artefacts
 	rm -rf .pytest_cache .ruff_cache .mypy_cache build dist *.egg-info htmlcov .coverage
 	find . -type d -name __pycache__ -prune -exec rm -rf {} +

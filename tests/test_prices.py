@@ -292,3 +292,100 @@ def test_equal_weighted_portfolio(null_panel: ReturnPanel) -> None:
     series = null_panel.equal_weighted(["DONOR00", "DONOR01"], "PORT")
     expected = null_panel.returns[["DONOR00", "DONOR01"]].mean(axis=1)
     pd.testing.assert_series_equal(series, expected, check_names=False)
+
+
+# ---------------------------------------------------------------------------
+# Transport failure vs delisting
+#
+# Added 2026-08-16 after a live probe: under a blocked egress route yfinance
+# does not raise on every path. It logs a transport error, returns an EMPTY
+# frame, and emits "$GRI.L: possibly delisted; no timezone found" for symbols
+# that are perfectly current. The old code raised ValueError telling the caller
+# to "verify the symbol is current", which would have sent them hunting for a
+# corporate action that never happened.
+#
+# This matters here more than in most projects because config/universe.yaml
+# deliberately contains names that GENUINELY delisted inside the sample
+# (PRSR.L, CSH.L). Conflating the two failures would either invent delistings
+# or hide real ones.
+# ---------------------------------------------------------------------------
+
+
+class _FakeTicker:
+    """Stand-in for `yfinance.Ticker` with a selectable failure mode."""
+
+    def __init__(self, mode: str) -> None:
+        self.mode = mode
+
+    def history(self, **_: object) -> pd.DataFrame:
+        if self.mode == "throw":
+            msg = "Failed to perform, curl: (7) CONNECT tunnel failed, response 403"
+            raise ConnectionError(msg)
+        if self.mode == "empty":
+            return pd.DataFrame()
+        index = pd.date_range("2020-01-01", periods=3, tz="UTC")
+        return pd.DataFrame(
+            {
+                "Close": [1.0, 2.0, 3.0],
+                "Volume": [1.0, 1.0, 1.0],
+                "Dividends": [0.0, 0.0, 0.0],
+                "Stock Splits": [0.0, 0.0, 0.0],
+            },
+            index=index,
+        )
+
+
+@pytest.fixture
+def _fetch(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):  # type: ignore[no-untyped-def]
+    """`fetch_prices` with a faked yfinance and a throwaway cache directory."""
+    import sys
+    import types
+
+    from policy_event_study.data import prices as prices_module
+
+    monkeypatch.setattr(prices_module, "YFINANCE_CACHE", tmp_path / "yf")
+
+    def run(modes: dict[str, str]) -> dict[str, pd.DataFrame]:
+        fake = types.SimpleNamespace(Ticker=lambda t: _FakeTicker(modes[t]))
+        monkeypatch.setitem(sys.modules, "yfinance", fake)
+        return prices_module.fetch_prices(
+            list(modes),
+            pd.Timestamp("2020-01-01"),
+            pd.Timestamp("2020-02-01"),
+            vintage="test",
+            use_cache=False,
+        )
+
+    return run
+
+
+def test_transport_exception_is_not_a_delisting(_fetch) -> None:  # type: ignore[no-untyped-def]
+    from policy_event_study.data.prices import PriceSourceUnreachableError
+
+    with pytest.raises(PriceSourceUnreachableError) as excinfo:
+        _fetch({"A.L": "throw"})
+    assert "NOT evidence about the symbol" in str(excinfo.value)
+
+
+def test_all_empty_is_read_as_transport_not_mass_delisting(_fetch) -> None:  # type: ignore[no-untyped-def]
+    """The blocked-egress signature: every frame empty, no exception raised."""
+    from policy_event_study.data.prices import PriceSourceUnreachableError
+
+    with pytest.raises(PriceSourceUnreachableError) as excinfo:
+        _fetch({"A.L": "empty", "B.L": "empty", "C.L": "empty"})
+    message = str(excinfo.value)
+    assert "says NOTHING about" in message
+    assert "Do not go looking for delistings" in message
+
+
+def test_some_empty_while_others_fetch_is_a_symbol_problem(_fetch) -> None:  # type: ignore[no-untyped-def]
+    """Route demonstrably fine, so an empty frame really is the symbol."""
+    with pytest.raises(ValueError, match="delisted inside the sample") as excinfo:
+        _fetch({"A.L": "empty", "B.L": "ok"})
+    assert "PriceSourceUnreachableError" not in type(excinfo.value).__name__
+
+
+def test_happy_path_returns_every_frame(_fetch) -> None:  # type: ignore[no-untyped-def]
+    frames = _fetch({"A.L": "ok", "B.L": "ok"})
+    assert set(frames) == {"A.L", "B.L"}
+    assert all(len(f) == 3 for f in frames.values())
