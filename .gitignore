@@ -39,6 +39,9 @@ data/events/briefing_cache/
 !data/exposure/
 !data/exposure/firm_attributes.csv
 !data/exposure/policy_targets.csv
+# Curation worksheets carry the per-cell sourcing behind firm_attributes.csv.
+# Hand work, not regenerable: the reasoning is the audit trail.
+!data/exposure/curation_worksheet_*.csv
 !data/exposure/README.md
 !data/universe/
 !data/universe/uk_listed_universe.csv
