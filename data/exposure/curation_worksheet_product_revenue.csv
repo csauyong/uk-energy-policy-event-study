@@ -1,0 +1,241 @@
+unit_id,firm,tier,attribute,fiscal_year,expected_knowable_from,serves_events,value,actual_knowable_from,source_url,confidence,status,reporting_note
+KRX.IR,Kingspan,1,uk_revenue_share,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+KRX.IR,Kingspan,1,uk_revenue_share,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+KRX.IR,Kingspan,1,uk_revenue_share,FY2018,~2019-12,ten-point-plan,,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+KRX.IR,Kingspan,1,uk_revenue_share,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+KRX.IR,Kingspan,1,uk_revenue_share,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+KRX.IR,Kingspan,1,uk_revenue_share,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+KRX.IR,Kingspan,1,uk_revenue_share,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+KRX.IR,Kingspan,1,uk_revenue_share,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+KRX.IR,Kingspan,1,uk_revenue_share,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+KRX.IR,Kingspan,1,uk_revenue_share,FY2025,~2026-12,(none - superseded),,,,,TODO,"FY to 31 Dec; prelims late Feb/early Mar. Segments: Insulated Panels, Insulation, Light+Air+Water, Data Solutions, Roofing+Waterproofing."
+KRX.IR,Kingspan,1,revenue_share_insulation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+KRX.IR,Kingspan,1,revenue_share_heating_ventilation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2018,~2019-12,ten-point-plan,,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+ROCK-B.CO,Rockwool,1,uk_revenue_share,FY2025,~2026-12,(none - superseded),,,,,TODO,FY to 31 Dec; annual report Feb. Near pure-play stone wool insulation; check Systems vs Insulation split.
+ROCK-B.CO,Rockwool,1,revenue_share_insulation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+ROCK-B.CO,Rockwool,1,revenue_share_heating_ventilation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+GEN.L,Genuit,1,uk_revenue_share,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+GEN.L,Genuit,1,uk_revenue_share,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+GEN.L,Genuit,1,uk_revenue_share,FY2018,~2019-12,ten-point-plan,,,,,TODO,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+GEN.L,Genuit,1,uk_revenue_share,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+GEN.L,Genuit,1,uk_revenue_share,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+GEN.L,Genuit,1,uk_revenue_share,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+GEN.L,Genuit,1,uk_revenue_share,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+GEN.L,Genuit,1,uk_revenue_share,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,DONE,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,DONE,
+GEN.L,Genuit,1,uk_revenue_share,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,DONE,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,DONE,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,DONE,
+GEN.L,Genuit,1,uk_revenue_share,FY2025,~2026-12,(none - superseded),,,,,TODO,FY to 31 Dec; results early Mar. Segments: CMS / WMS / SBS. FY2024 DONE.
+GEN.L,Genuit,1,revenue_share_insulation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+GEN.L,Genuit,1,revenue_share_heating_ventilation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2018,~2019-12,ten-point-plan,,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+SIG.L,SIG plc,1,uk_revenue_share,FY2025,~2026-12,(none - superseded),,,,,TODO,FY to 31 Dec; results Mar. Distributor: insulation and interiors vs exteriors. Check UK vs continental split carefully.
+SIG.L,SIG plc,1,revenue_share_insulation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+SIG.L,SIG plc,1,revenue_share_heating_ventilation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2018,~2019-12,ten-point-plan,,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+SGO.PA,Saint-Gobain,2,uk_revenue_share,FY2025,~2026-12,(none - superseded),,,,,TODO,FY to 31 Dec; results Feb. Insulation is a minority of a very large group; UK share small.
+SGO.PA,Saint-Gobain,2,revenue_share_insulation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+SGO.PA,Saint-Gobain,2,revenue_share_heating_ventilation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2018,~2019-12,ten-point-plan,,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+TPK.L,Travis Perkins,2,uk_revenue_share,FY2025,~2026-12,(none - superseded),,,,,TODO,FY to 31 Dec; results Mar. Merchanting; affected share likely small and needs a stated mapping.
+TPK.L,Travis Perkins,2,revenue_share_insulation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+TPK.L,Travis Perkins,2,revenue_share_heating_ventilation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2018,~2019-12,ten-point-plan,,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+MSLH.L,Marshalls,3,uk_revenue_share,FY2025,~2026-12,(none - superseded),,,,,TODO,FY to 31 Dec; results Mar. Landscaping/hardscape. Roofing from Marley acquisition (2022) may change the mapping mid-sample.
+MSLH.L,Marshalls,3,revenue_share_insulation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+MSLH.L,Marshalls,3,revenue_share_heating_ventilation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2013,~2014-12,zero-carbon-homes-cancelled;green-deal-funding-ended,,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2017,~2018-12,fhs-2019-consultation,,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2018,~2019-12,ten-point-plan,,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2018,~2019-12,ten-point-plan,,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2019,~2020-12,fhs-2019-response;ghg-vouchers-closed;eco4-consultation;heat-and-buildings-strategy,,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2020,~2021-12,part-l-2021-published;energy-security-strategy,,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2021,~2022-12,shdf-wave21-awards;net-zero-rollback-2023,,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2022,~2023-12,fhbs-2023-consultation;redcar-hydrogen-cancelled;chmm-delayed;autumn-budget-2024,,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2023,~2024-12,epc-reform-consultation;prs-mees-epc-c-reinstated;spending-review-2025;dhs-and-social-mees-consultations;budget-2025-eco-abolished,,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2024,~2025-12,warm-homes-plan;social-mees-response;future-homes-standard-2026,,,,,TODO,
+IBST.L,Ibstock,3,uk_revenue_share,FY2025,~2026-12,(none - superseded),,,,,TODO,"FY to 31 Dec; results Mar. Clay bricks and concrete. Expect MEASURED ZERO on insulation per R6, not absent."
+IBST.L,Ibstock,3,revenue_share_insulation,FY2025,~2026-12,(none - superseded),,,,,TODO,
+IBST.L,Ibstock,3,revenue_share_heating_ventilation,FY2025,~2026-12,(none - superseded),,,,,TODO,

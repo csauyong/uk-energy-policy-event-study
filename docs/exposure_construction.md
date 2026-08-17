@@ -210,7 +210,312 @@ universe is exposed.
 
 ---
 
-## 7. What is not yet done
+## 7. Curation rules — pre-registered 2026-08-16, before any firm data was read
+
+These were written and committed **before** the first attribute was curated, for
+the same reason the leak rule was written before the first search: a rule
+authored after seeing the numbers is not a rule, it is a rationalisation.
+
+### R0 — curate blind, and this extends Rule 0 to exposure
+
+`docs/event_curation_protocol.md` Rule 0 forbids looking at price series while
+curating events. **It binds equally on exposure curation, and more tightly.** A
+date is one number you either find or do not; an exposure weight is continuous
+and defensible across a range, so it has far more researcher degrees of freedom.
+Curating exposure after seeing which names moved on 20 September 2023 is
+selection on the dependent variable through a different door — and it is the
+door a sceptical reader checks first, because *"how did you pick the weights?"*
+is the standard objection to every dose-response design.
+
+No price series, no return series, no "did this firm move" check, until
+`firm_attributes.csv` is frozen and tagged.
+
+### R1 — categories are defined at the coarsest granularity every firm discloses
+
+**A segment is never split into categories the firm does not split.** Genuit
+reports Climate Management Solutions as one line covering low-carbon heating,
+cooling and ventilation; it does not disclose heating separately from
+ventilation. Assigning, say, 60/40 would be a fabricated number entering the
+regression as data.
+
+So affected categories are defined at disclosed granularity, and where a firm's
+segment spans several, the whole segment is recorded against a combined
+category. This over-states exposure for an event targeting only part of the
+segment. That is the correct direction to err: over-stated magnitude attenuates
+β toward zero, whereas an invented split biases it in an unknown direction.
+
+`policy_targets.csv` therefore names categories the *firms* disclose, not
+categories the *policy* distinguishes.
+
+### R1a — a category inside a segment, not spanning it, is ABSENT
+
+Added 2026-08-16 during Tier 3 curation, because R1 met a case it did not
+anticipate and stretching it would have been wrong.
+
+R1 handles a segment that spans *several affected categories* — Genuit's
+Climate Management Solutions is entirely heating and ventilation, so recording
+the whole segment against a combined category over-states nothing that is not
+genuinely exposed.
+
+Marshalls is the opposite shape. Roofing Products "comprises Marley Roofing and
+Viridian Solar" — an affected business (roof-integrated solar) sitting *inside*
+a segment that is mostly unaffected (clay and concrete roof tiles). Recording
+the segment total would not over-state a real exposure; it would attribute
+revenue that is **not exposed at all** to an affected category, and it would
+also drag every other roof-tile maker into a solar mandate. Ibstock makes
+concrete roof tiles and would inherit solar exposure it does not have.
+
+**So: where an affected category is a proper subset of a disclosed segment and
+the firm does not split it, the attribute is ABSENT, not the segment total and
+not zero.** The firm re-enters the moment a split is disclosed. The segment
+total is recorded in the row's `note` as context for a later curator, never as
+the value.
+
+Consequence, stated plainly: Marshalls currently has no usable
+`revenue_share_roof_integrated_solar`, so it drops out of solar-mandate events
+— including 2026-03-24, which is the event its own results describe Viridian as
+being driven by. That is a real loss and it is recoverable: Marley acquired
+Viridian Solar in 2021 and acquisition-year disclosures often state standalone
+revenue. **Checking the FY2021 and FY2022 reports for a Viridian revenue level
+is the highest-value single outstanding item in product_revenue curation.**
+
+### R2 — the segment-to-category mapping is fixed before the numbers are read
+
+For each firm, write down which reported segments map to which affected
+category **from the segment's stated description**, then read the revenue. Not
+the other way round. The mapping is recorded in §7.1 below with the firm's own
+words, so a reader can disagree with the mapping without re-deriving it.
+
+### R3 — vintage selection
+
+The attribute in force for event *e* is the one with the greatest
+`knowable_from` strictly earlier than *e*'s announcement timestamp. Selection is
+on `knowable_from`, never on `as_of_date`: a recently-published older figure is
+still the freshest *public* information.
+
+### R4 — `knowable_from` is the results-announcement date
+
+Not the year-end, not the annual report PDF date, not the AGM. The RNS results
+announcement is when the figures entered the market. For Genuit's FY2024 the
+year-end is 2024-12-31 and `knowable_from` is 2025-03-10 — a ten-week gap, and
+gaps of four months are routine.
+
+### R5 — no interpolation, no carry-forward, no estimation
+
+A firm-year with no disclosure is **absent**, and absent propagates to "does not
+apply" for events that would have selected it. It is never filled by
+interpolating neighbouring years, by carrying the prior year forward as if
+newly published, or by inferring from a peer.
+
+This is the rule that matters most. Every other error in this project is
+visible in a diagnostic; a fabricated exposure value is not. It would produce a
+β that looks fine and means nothing, and no sensitivity in §4 would catch it.
+`confidence` is recorded per row and any row not read directly from a named
+document is `confidence: low` and excluded from the headline specification.
+
+### R6 — measured zero versus does not apply
+
+Restating §3 as an operating instruction. Ibstock disclosing brick and concrete
+revenue and no insulation line has been **measured** as unexposed to an
+insulation mandate: `value: 0.0`, and it counts in the identification. Ibstock
+with no readable disclosure for that year is **absent**: no row, and the firm
+drops out for events selecting that vintage. The two must never be conflated,
+because a false zero attenuates β while an absence merely shrinks n.
+
+### R7 — restatements
+
+Where a later report restates an earlier year, both are recorded, with their own
+`knowable_from`. R3 then does the work automatically: an event before the
+restatement sees the original, an event after sees the restated figure. This is
+also what makes sensitivity S7 runnable.
+
+### 7.1 Segment-to-category mapping
+
+Fixed per R2 before reading revenue. Firm's own segment description in quotes.
+
+| Firm | Segment | Firm's description | Category |
+|---|---|---|---|
+| GEN.L Genuit | Climate Management Solutions | "addressing the drivers for low carbon heating and cooling, and clean and healthy air ventilation" | `heating_ventilation` |
+| GEN.L Genuit | Water Management Solutions | "climate adaptation and resilience through integrated surface and drainage solutions" | *none — measured zero* |
+| GEN.L Genuit | Sustainable Building Solutions | "plumbing and water supply, drainage and other building accessories" | *none — measured zero* |
+| MSLH.L Marshalls | Landscape Products | "Commercial and Domestic landscaping business and Landscape Protection" | *none — measured zero* |
+| MSLH.L Marshalls | Building Products | "Water Management, Bricks and Masonry, Mortars and Screeds and Aggregate businesses" | *none — measured zero* |
+| MSLH.L Marshalls | Roofing Products | "comprises Marley Roofing and Viridian Solar" | `roof_integrated_solar`, **ABSENT per R1a** — not split |
+| IBST.L Ibstock | Clay | "leading manufacturer by volume of clay bricks sold in the UK"; Ibstock Kevington masonry and prefabricated components; Ibstock Futures reported within this segment | *none — measured zero* |
+| IBST.L Ibstock | Concrete | "concrete roofing, walling, flooring and fencing products, along with lintels and rail & infrastructure products" | *none — measured zero.* Concrete roof tiles are roofing, **not** roof-integrated solar |
+
+Remaining firms are mapped as they are curated; the mapping is written before
+the revenue for that firm is read, and the row is dated in
+`reports/decision_log.md`.
+
+### 7.2 Rule interactions found during curation
+
+Three, all found by curating rather than by reading the config. Each needs a
+decision-log row before scoring.
+
+**(a) An absent `uk_revenue_share` must not drop a firm whose affected shares
+are all measured zeros.** `config/exposure.yaml` returns "does not apply" when
+`uk_revenue_share` is missing, to stop a foreign manufacturer inheriting full UK
+exposure by default. That guard only bites when the affected share is non-zero:
+if every affected category is a measured zero, magnitude is zero whatever the UK
+share is, and dropping the firm loses a legitimate zero from the identification.
+Ibstock is the live instance — its FY2024 RNS carries no geographic note, so its
+UK share is absent, yet every affected share is a clean measured zero.
+**Builder change required:** absent `uk_revenue_share` → "does not apply" *only
+if* some affected-category share is non-zero.
+
+**(b) `policy_targets.csv` has no solar category and needs one.** The
+2026-03-24 Future Homes Standard mandates solar generation equivalent to ≥40%
+of floor area on most new homes. No affected category covers it. This was
+invisible until a firm with solar revenue was curated.
+
+**(c) The `product_revenue` channel captures product-category exposure but not
+construction-volume exposure — a documented limitation, not a fix.** Ibstock's
+bricks and Marshalls' landscaping go into new homes; a standard that raises
+build cost and suppresses starts hits them through volume, not through an
+affected product line. Under the pre-registered definition both are measured
+zeros for new-build events, which understates them.
+
+This is left unmodelled, for the same reason `domestic_supply` was set to zero:
+the sign is ambiguous ex ante — higher standards raise cost per unit but also
+value per unit, and the volume effect partly duplicates the `delivered_stock`
+housebuilder channel. Adding it now, after seeing which firms it would move,
+would be a new specification chosen post-hoc. It is recorded as a limitation and
+a candidate for a pre-registered extension in any future work.
+
+---
+
+### 7.3 Open items raised by `policy_targets.csv` (2026-08-16)
+
+24 events, 30 target rows — an event carries one row per (channel, scope) it
+touches, which is what lets a single announcement hold opposite signs.
+
+**(a) New-build standards cannot be expressed as an EPC band, and this currently
+darkens the entire housebuilder channel. 7 of 7 `new_build` target rows carry a
+blank `mandated_min_band`, so `delivered_stock` scores nothing for any event.**
+
+Part L 2021 mandates a 31% CO2 reduction against a 2013 baseline; the Future
+Homes Standard mandates 75%. Neither is a band. Writing "FHS = band A" would be
+a fabricated value under R5 — a mapping study, not a disclosure — and it would
+enter the regression as data.
+
+**RESOLVED 2026-08-16 — option 3. The housebuilder channel is retired and the
+study is a products-and-landlords result.** The reasoning is below because a
+reader must be able to check it; the summary is that a band-gap dose cannot be
+constructed from disclosed quantities, and the two alternatives fail for
+independent reasons.
+
+**Why a band mapping (option 1) is not available.** Building regulations do not
+mandate a band. Part L 2021 requires that a new dwelling meet a Target Emission
+Rate and a Target Primary Energy Rate — `DER ≤ TER` and `DPER ≤ TPER` — both
+derived from a *notional dwelling* with reference fabric, services and an on-site
+renewables uplift. No SAP score and no band is specified anywhere in the
+instrument. Bands are an **outcome** of compliance, not a requirement of it, so
+there is no mandated band to cite. Outcome statistics do circulate — the share of
+new dwellings achieving band B, the claim that FHS homes will "typically" be A —
+but only in trade commentary, and adopting one would be the exact analogue of
+taking an event date from news coverage.
+
+**Why bands are not comparable across the sample even as outcomes.** The
+calculation methodology changes three times inside the event window: SAP 2012
+under Part L 2013, SAP 10.2 under Part L 2021, and the Home Energy Model under
+the Future Homes Standard. RdSAP 10 changed the domestic assessment again in
+2025, and the EPC metric itself was reformed in the partial response of
+2026-01-21. A band in 2015 and a band in 2026 are different quantities computed
+by different procedures.
+
+The sharpest way to put this: **`epc-reform-consultation` is in the event
+dictionary.** The event list contains the event that breaks band comparability.
+Using a band-gap dose across this sample would mean holding the measuring
+instrument constant across the announcement that changed the measuring
+instrument.
+
+**Why the percentage-step amendment (option 2) also fails.** The steps are
+stated — 31% for Part L 2021, 75% for the Future Homes Standard — but against
+different baselines, and no step is stated at all for the 2015 cancellation or
+the 2019 consultation, so at best 3 of 7 new-build events get a dose. The
+firm-side analogue is worse: housebuilders disclose EPC band distributions of
+completions, not a percentage compliance margin, so option 2 needs a
+band-to-percentage mapping running in the opposite direction and lands back in
+the same problem.
+
+**And the firm-side data does not reach the early events regardless.**
+Housebuilder EPC completion disclosures begin around 2019–2021. Of the seven
+new-build events, three predate any such disclosure. Even a working construction
+would cover 4 of 7.
+
+**Consequences, stated rather than absorbed.** The housebuilder block — nine of
+twenty-six treated names, the largest single group — contributes no exposure and
+is not curated. Sensitivity **S2 is retired as moot**: there is no housebuilder
+dose whose sign could be flipped, and §4 is amended accordingly. The seven
+`new_build` target rows stay in `policy_targets.csv` with blank bands, as the
+record of an exposure the design could not measure. Seven events therefore
+contribute to the event list but not to the dose-response, and the report must
+say so where it reports n.
+
+This is a real narrowing and it is the honest one. The alternative was a
+fabricated mandate value under R5, which no sensitivity in §4 would have caught.
+
+**(b) `net-zero-rollback-2023` has internally offsetting product legs.** The same
+announcement delayed the off-grid boiler phase-out (loosen) *and* raised the
+Boiler Upgrade Scheme grant 50% to £7,500 (tighten). Net product exposure is
+therefore ambiguous by construction, and the clean leg of this event is the
+landlord one — which sharpens rather than weakens the case for resolving the
+`residential_stock` channel, since it is the only unambiguous signal in the most
+important event in the sample.
+
+**(c) `redcar-hydrogen-cancelled` may carry no exposure variance.** It bites only
+on hydrogen-ready boiler manufacturers, and no curated firm discloses hydrogen
+boiler revenue. If every firm scores zero the estimator will raise. That is
+correct behaviour, not a bug: keep the event, record the null, and report it as
+an event the exposure measure cannot reach.
+
+### 7.4 Curation mechanics, learned by doing it (2026-08-16)
+
+Four firms curated. Three operational findings, and one of them changes how the
+remaining work should be prioritised.
+
+**Fetch the results announcement, not the annual report.** Results press
+releases and RNS statements extract cleanly to text; full annual report PDFs are
+multi-column and their segment tables are lost in extraction. Genuit, Marshalls
+and Ibstock all yielded on the first attempt from a results release. Kingspan's
+annual report financial statements yielded the accounting policy and no numbers
+at all, and cost three fetches before switching sources.
+
+**But results releases carry segments without geography.** The geographic
+revenue note lives in the annual report — the document that does not extract.
+For UK-only names this does not matter, because their results releases state UK
+revenue directly. For multinationals it is binding: Kingspan's FY2024
+preliminary statement gives a complete five-segment turnover table and mentions
+the UK only qualitatively ("the UK market has been generally under pressure").
+
+**Therefore: `uk_revenue_share` is the attribute that moves the exposure ranking
+most, and it is least available exactly where it matters most.** For Genuit,
+Marshalls and Ibstock the UK share is 0.89–1.00, so it barely moves the
+magnitude. For Kingspan it is plausibly 0.10–0.15, which would cut its magnitude
+by roughly 85% and could move it from the top of the exposure ranking to the
+middle. The names where the multiplier does real work are the names whose
+multiplier is hardest to source. Budget the remaining Tier 1 curation around
+finding UK revenue shares, not around finding segment splits.
+
+**(d) End market is an unmodelled dimension, and Kingspan makes it material.**
+Insulated Panels is 55% of Kingspan's revenue and is genuinely an insulation
+product, but it is composite building-envelope systems sold predominantly into
+non-residential construction. UK *domestic* efficiency policy does not drive it.
+It is recorded as excluded rather than as insulation revenue, on the same
+reasoning as R1a: this is not over-statement of a real exposure but attribution
+of revenue that is not exposed to the instruments in this study.
+
+The `product_revenue` channel has a category dimension and a geography
+dimension but no end-market dimension, so a firm selling insulation into
+warehouses scores identically to one selling it into homes. This is recorded as
+a limitation, not fixed — adding an end-market split now, after seeing which
+firms it would move, would be a post-hoc specification, and most firms do not
+disclose a residential/non-residential revenue split in any case.
+
+---
+
+## 8. What is not yet done
 
 - **Curation.** Both input CSVs are header-only.
 - **The screening universe.** `data/universe/uk_listed_universe.csv` is

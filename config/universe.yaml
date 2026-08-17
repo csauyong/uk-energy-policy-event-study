@@ -171,9 +171,74 @@ treated:
       Minimum-EPC mandates are unfunded capex on an existing portfolio. The
       Sep-2023 rollback is the mirror image and should carry the opposite
       sign — the falsification test `expected_direction` exists to support.
+    # POINT-IN-TIME MEMBERSHIP (added 2026-08-16). CLAUDE.md §2.4: the donor and
+    # treated sets must be built from membership as of the event date, not from
+    # firms that exist today. The UK listed residential landlord sector SHRANK
+    # over the sample and the two most policy-exposed names both left it, so a
+    # present-tense membership list silently drops the treated names with the
+    # highest dose — survivorship bias pointing straight at the channel.
+    #
+    # `listed_from` / `listed_to` are enforced by the loader: a unit resolves to
+    # treated only for events inside its listed window, and to `not_listed`
+    # (which is NOT the same as excluded) outside it.
     members:
       - { unit_id: GRI.L, name: Grainger }
-      - { unit_id: UTG.L, name: Unite Group }
+
+      - unit_id: UTG.L
+        name: Unite Group
+        scope_flag: pbsa_out_of_domestic_mees
+        scope_note: >
+          Purpose-built student accommodation. Domestic MEES bites by TENANCY
+          TYPE, not building type: it applies to property let on an assured or
+          regulated tenancy, and PBSA is typically let on fixed-term common-law
+          tenancies outside that regime, with a further exemption for terms of
+          six months or less. Unite's exposure to domestic MEES is therefore
+          questionable and probably small.
+          RESOLVE BEFORE SCORING: either curate a defensible magnitude from
+          Unite's own tenancy disclosure, or score MEASURED ZERO per R6 with
+          this note as the justification. Do NOT assign a haircut by judgement —
+          that would be a fabricated exposure value under R5.
+
+      # --- Left the market during the sample. Kept, with windows. ---
+      - unit_id: PRSR.L
+        name: The PRS REIT
+        listed_from: 2017-06-01      # VERIFY: IPO'd on the Main Market mid-2017
+        listed_to: 2026-01-31        # VERIFY: shares cancelled Jan 2026 after MVL
+        date_confidence: low
+        exit_reason: >
+          Agreed £629m sale of the portfolio holding company to Waypoint
+          (Sept 2024); members' voluntary liquidation approved Nov 2025; listing
+          cancelled Jan 2026.
+        note: >
+          Pure-play family build-to-rent landlord — the MOST domestic-MEES-
+          exposed name in the treated set, and the one a present-tense universe
+          would drop. Listed across the September 2023 rollback and the
+          February 2025 reinstatement, which is exactly the pairing the
+          residential_stock channel exists to test.
+          PRICE HISTORY IS THE BLOCKER: `PRSR.L` returns HTTP 404 from the
+          current provider. If history to the delisting date cannot be sourced,
+          record the failure and fall back to reporting the channel as
+          underpowered — do not substitute a proxy.
+
+      - unit_id: CSH.L
+        name: Civitas Social Housing
+        listed_from: 2016-11-18      # VERIFY: IPO date
+        listed_to: 2023-08-04        # VERIFY: cancellation 08:00, 4 Aug 2023
+        date_confidence: low
+        exit_reason: Takeover by CK Asset Holdings; listing cancelled 4 Aug 2023.
+        note: >
+          Social housing REIT. Exposed to the SOCIAL rented MEES track
+          (2025-07-02 consultation, 2026-01-28 response) rather than the
+          domestic PRS track — but it had already delisted before both, so it
+          contributes only to earlier events. Include for completeness of the
+          point-in-time set; expect it to add little.
+
+    delisting_register_note: >
+      Home REIT (HOME.L) is deliberately NOT included: trading was suspended
+      amid an accounting investigation, so its price series is unusable and its
+      disclosures are unreliable. Residential Secure Income and Empiric Student
+      Property are candidates not yet assessed. This register is incomplete and
+      is the open item in docs/exposure_construction.md §8.
 
 # ---------------------------------------------------------------------------
 # DONOR POOL — global default status.
