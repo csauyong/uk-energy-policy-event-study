@@ -160,3 +160,66 @@ direction is a hole. This one is a bound.
 | — | B3 (estimates indistinguishable from placebos) | **not yet evaluable** | — |
 | 2026-08-15 | *Advisory, pre-data*: §3.1 arithmetic floor | **1% level unreachable with any donor pool this design admits** | Report states results at 5% only; 1% appears nowhere |
 | 2026-08-15 | **Phase 1b power diagnostic** | **SC design cannot detect effects of the size at stake** (20-day MDE 12-24% CAR) | **Estimand changed to dose-response** (row 17). SC/SDiD retained as robustness, not deleted. This is the criterion doing its job |
+
+---
+
+## 2026-08-16 — `delivered_stock` retired; the study is products-and-landlords
+
+**Specification tried.** Score the housebuilder channel as
+`share_of_delivered_below_mandated_band`, per the pre-registered
+`config/exposure.yaml`.
+
+**Why it was examined.** Building `data/exposure/policy_targets.csv` produced a
+blank `mandated_min_band` on 7 of 7 `new_build` target rows. The channel cannot
+compute without one, so the blanks were either a curation gap to fill or a sign
+that the construction does not fit the instruments. They were the latter.
+
+**Finding.** Building regulations do not mandate a band. Part L 2021 requires
+`DER ≤ TER` and `DPER ≤ TPER` against a *notional dwelling*; no SAP score and no
+band appears in the instrument. Bands are an outcome of compliance, not a
+requirement, so there is no mandated band to source. Band outcome statistics
+exist only in trade commentary and adopting one would be the analogue of taking
+an event date from news coverage.
+
+Independently, bands are not comparable across the sample: SAP 2012 → SAP 10.2 →
+Home Energy Model, plus RdSAP 10 in 2025 and the EPC metric reform of
+2026-01-21. **`epc-reform-consultation` is itself an event in the dictionary** —
+the sample contains the announcement that changed the measuring instrument.
+
+The percentage-step alternative fails separately: baselines differ, only 3 of 7
+events carry a stated step, and the firm-side analogue is not disclosed.
+Housebuilder EPC completion data also begins around 2019–2021, so 3 of the 7
+new-build events have no firm-side data under any construction.
+
+**Kept or abandoned.** Abandoned. Not because it produced an unwelcome number —
+it produced none — but because the dose cannot be built from disclosed
+quantities without fabricating a mandate value, which R5 forbids and which no
+sensitivity in `docs/exposure_construction.md` §4 would detect.
+
+**Consequences.**
+
+| | |
+|---|---|
+| Treated names losing exposure | 9 of 26 (the housebuilder block) |
+| Curation cancelled | 9 firms × ~12 vintages of band profiles |
+| Sensitivity S2 (housebuilder sign flip) | **retired as moot** — no dose to flip |
+| `new_build` target rows | retained with blank bands, as the record of an unmeasurable exposure |
+| Events dropping out of the dose-response entirely | 5 (`zero-carbon-homes-cancelled`, `fhs-2019-consultation`, `fhs-2019-response`, `part-l-2021-published`, `fhbs-2023-consultation`) |
+| Events losing a leg but surviving on a product leg | 2 (`ten-point-plan`, `future-homes-standard-2026`) |
+| Events still contributing to the dose-response | **19 of 24** |
+
+The report must state `n` separately for the event list (24) and for the
+dose-response (19), or the five will read as a silent drop.
+
+**Note on `future-homes-standard-2026`.** It survives. Its delivered_stock leg
+(the delay to 2028) is unmeasurable, but its two product legs — the solar
+mandate and the heat-pump requirement — are `new_build` in *scope* while being
+`product_revenue` in *channel*, and they score normally. The event keeps the
+tighten side of its opposite-signed structure and loses the loosen side, which
+must be stated wherever that event is discussed as a two-sided shock: after this
+row, it is one-sided.
+
+**Estimand after this row.** Products and landlords: `product_revenue` and
+`residential_stock`. `domestic_supply` remains zero by design (§2.1);
+`delivered_stock` now joins it as a channel carried in the config and reported
+as unmeasurable rather than deleted.
