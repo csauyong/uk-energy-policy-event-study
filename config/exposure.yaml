@@ -45,7 +45,17 @@ channels:
       the fraction of the portfolio requiring capex, which is the economically
       meaningful quantity rather than portfolio size.
     magnitude: share_of_stock_below_mandated_band
-    stock_attribute_prefix: dwellings_band_
+    # GATED ON THE TARGET'S SCOPE since 2026-08-17. MEES binds by TENURE, not
+    # by building type, so the tenure a firm lets on decides whether an
+    # instrument reaches it at all. `dwellings_band_` means "domestic stock,
+    # tenure NOT disclosed" and scores only under `all_domestic`; a landlord
+    # curated without a tenure split therefore scores nothing at a
+    # tenure-specific event rather than being assumed fully private rented,
+    # which would be a fabricated value under R5.
+    stock_attribute_prefixes:
+      all_domestic: [dwellings_band_, dwellings_prs_band_, dwellings_social_band_]
+      domestic_prs: [dwellings_prs_band_]
+      social_rented: [dwellings_social_band_]
     channel_sign: -1
     sign_rationale: >
       A minimum-EPC mandate is unfunded capex on an existing portfolio.
@@ -58,6 +68,9 @@ channels:
       the policy mandates. A builder already delivering to the mandated
       standard has zero dose however large it is.
     magnitude: share_of_delivered_below_mandated_band
+    # Gated to `new_build` scope only: a minimum-EPC mandate on let property
+    # binds whoever holds the stock, not whoever built it.
+    applies_to_scopes: [new_build]
     stock_attribute_prefix: delivered_units_band_
     standard_attribute: build_standard_band
     channel_sign: -1

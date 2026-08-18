@@ -252,9 +252,13 @@ def validate_exposure_inputs(
                     row_no,
                     "mandated_min_band",
                     (
-                        "an event must specify a mandated band, affected "
-                        "categories, or both; otherwise no channel can score it"
+                        "neither a mandated band nor an affected category, so no "
+                        "channel can score this target: it is SKIPPED and counted "
+                        "by build_exposure_panel, not scored as zero. Eight such "
+                        "rows are deliberate -- the record of the retired "
+                        "delivered_stock exposure, kept so the gap stays visible"
                     ),
+                    fatal=False,
                 )
             )
 
@@ -348,6 +352,18 @@ def parse_exposure_inputs(
 # --------------------------------------------------------------------------
 
 
+def unscoreable_targets(
+    targets: Sequence[PolicyTarget],
+) -> tuple[PolicyTarget, ...]:
+    """Targets no channel can score, because they name neither band nor category.
+
+    Exposed so a caller can see the gap before building rather than infer it
+    from a short panel. `CLAUDE.md` requires `n` to be stated separately for
+    the event dictionary and for the dose-response, and this is the difference.
+    """
+    return tuple(target for target in targets if not target.is_scoreable)
+
+
 def score_firm(
     unit_id: str,
     attributes: Mapping[str, FirmAttribute],
@@ -437,8 +453,17 @@ def build_exposure_panel(
         withheld by the point-in-time filter.
     """
     rows: list[dict[str, object]] = []
+    skipped = unscoreable_targets(targets)
+    scoreable = [target for target in targets if target.is_scoreable]
+    if targets and not scoreable:
+        msg = (
+            "every policy target names neither a mandated band nor an affected "
+            "category, so no channel can score any of them and the panel would "
+            "be empty. This is a curation failure, not a numerical one"
+        )
+        raise ValueError(msg)
 
-    for target in targets:
+    for target in scoreable:
         announcement = announcement_times.get(target.event_id)
         if announcement is None:
             msg = (
@@ -484,7 +509,13 @@ def build_exposure_panel(
             )
 
     panel = pd.DataFrame(rows)
+    # Recorded on the frame rather than logged away: a skipped target leaves no
+    # row at all, so a reader counting events in the panel would otherwise see
+    # a silent shortfall and have nothing to attribute it to.
+    skipped_ids = tuple(dict.fromkeys(target.event_id for target in skipped))
     if panel.empty:
+        panel.attrs["unscoreable_event_ids"] = skipped_ids
+        panel.attrs["n_unscoreable_targets"] = len(skipped)
         return panel
 
     # Standardise and rank WITHIN each event. Pooling first would let one
@@ -503,11 +534,14 @@ def build_exposure_panel(
         )
         return group
 
-    return (
+    standardised = (
         panel.groupby("event_id", group_keys=False)[list(panel.columns)]
         .apply(_standardise)
         .reset_index(drop=True)
     )
+    standardised.attrs["unscoreable_event_ids"] = skipped_ids
+    standardised.attrs["n_unscoreable_targets"] = len(skipped)
+    return standardised
 
 
 def exposure_dispersion(panel: pd.DataFrame) -> pd.DataFrame:

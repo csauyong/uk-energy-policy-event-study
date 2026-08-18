@@ -482,20 +482,26 @@ and Ibstock all yielded on the first attempt from a results release. Kingspan's
 annual report financial statements yielded the accounting policy and no numbers
 at all, and cost three fetches before switching sources.
 
-**But results releases carry segments without geography.** The geographic
-revenue note lives in the annual report — the document that does not extract.
-For UK-only names this does not matter, because their results releases state UK
-revenue directly. For multinationals it is binding: Kingspan's FY2024
-preliminary statement gives a complete five-segment turnover table and mentions
-the UK only qualitatively ("the UK market has been generally under pressure").
+**~~But results releases carry segments without geography.~~ CORRECTED
+2026-08-17 — this was wrong, and it was wrong in the direction that stopped
+the curation.** Kingspan's preliminary results statements carry the full
+"Analysis of segmental data by geography" note in every year checked
+(FY2014, FY2019, FY2020, FY2021, FY2024). The FY2024 prelim was read as
+lacking geography because *Britain* is absent from it — but the note is there,
+and so is the reason Britain is not in it. See §7.5. The operating lesson
+survives in weaker form: fetch the results release first, but when a figure
+appears to be missing, establish *why* before concluding the document is the
+wrong one.
 
 **Therefore: `uk_revenue_share` is the attribute that moves the exposure ranking
 most, and it is least available exactly where it matters most.** For Genuit,
 Marshalls and Ibstock the UK share is 0.89–1.00, so it barely moves the
 magnitude. For Kingspan it is plausibly 0.10–0.15, which would cut its magnitude
 by roughly 85% and could move it from the top of the exposure ranking to the
-middle. The names where the multiplier does real work are the names whose
-multiplier is hardest to source. Budget the remaining Tier 1 curation around
+middle. *(Confirmed 2026-08-17: 0.1539 at the last disclosed vintage. The
+prediction was right, and the consequence is §7.5 — Kingspan is not a
+top-of-ranking name in this study and never was.)* The names where the
+multiplier does real work are the names whose multiplier is hardest to source. Budget the remaining Tier 1 curation around
 finding UK revenue shares, not around finding segment splits.
 
 **(d) End market is an unmodelled dimension, and Kingspan makes it material.**
@@ -512,6 +518,146 @@ warehouses scores identically to one selling it into homes. This is recorded as
 a limitation, not fixed — adding an end-market split now, after seeing which
 firms it would move, would be a post-hoc specification, and most firms do not
 disclose a residential/non-residential revenue split in any case.
+
+### 7.5 Kingspan: the disclosure regime changes inside the sample (2026-08-17)
+
+Kingspan's `uk_revenue_share` was the single blocking cell. It is now resolved,
+and the resolution is not a number — it is a **date at which the number stops
+existing**.
+
+**What Kingspan discloses.** The IFRS 8 geography note names an individual
+country only "on the basis of materiality, where revenue exceeds 15% of total
+Group revenues". Britain cleared that threshold every year to FY2021 and has
+not cleared it since.
+
+| Vintage | `knowable_from` | UK / Britain (€m) | Group (€m) | Share | How it is disclosed |
+|---|---|---|---|---|---|
+| FY2014 | 2015-02-23 | 687.4 | 1,891.2 | **0.3635** | `United Kingdom`, own column |
+| FY2019 | 2020-02-21 | 891.8 | 4,659.1 | **0.1914** | `United Kingdom`, own column |
+| FY2019 *restated* | 2021-02-19 | 848.4 | 4,659.1 | **0.1821** | re-cut to `Britain` |
+| FY2020 | 2021-02-19 | 743.6 | 4,576.0 | **0.1625** | `Britain`, own column |
+| FY2021 | 2022-02-18 | 999.8 | 6,497.0 | **0.1539** | narrative only; last year above 15% |
+| FY2022–FY2025 | — | *not disclosed* | — | **ABSENT** | Britain folded into Western & Southern Europe |
+
+Three things follow, and each is a caveat with a direction.
+
+**(a) The FY2019 restatement is a live R7 pair, not a duplicate.** FY2019 was
+published as `United Kingdom` €891.8m and restated a year later to `Britain`
+€848.4m on the same group total. The €43.4m difference is Northern Ireland
+leaving the line. Both rows are carried with their own `knowable_from`, so R3
+selects by date. **`Britain` understates UK policy exposure**, so every vintage
+from FY2020 on is measured slightly low, which attenuates.
+
+**(b) Absence from FY2022 is evidence, and it bounds the value.** Kingspan did
+not stop reporting geography; Britain stopped being material. That is positive
+information: **UK revenue is below 15% of group in FY2022–FY2025.** So the
+`product_revenue` magnitude is bounded above by `0.15 × affected share` — at
+FY2024 that is **under 0.0318, against Genuit's 0.2561**. Kingspan is roughly
+an eighth of Genuit's dose at best. *The highest-value cell in the curation was
+high-value because of the drop-out mechanics, not because Kingspan would have
+topped the ranking.*
+
+**(c) R3 carries FY2021 forward, and the direction of that error is known.**
+No later `uk_revenue_share` exists, so 0.1539 remains the freshest *published*
+figure and R3 correctly uses it for every event from 2022 on. This is not the
+carry-forward R5 forbids — R5 forbids inventing a firm-year, not using the last
+published one. But Kingspan's own later accounts imply a value **below 0.15**,
+so the carried figure **over-states** its exposure at 8 events. Over-statement
+is classical measurement error and **attenuates β toward zero**.
+
+**`revenue_share_heating_ventilation` is ABSENT for Kingspan at every vintage,
+per R1a.** Ventilation sits inside `Light & Air` (later `Light, Air + Water`),
+a segment that also carries architectural daylighting and water and that
+Kingspan does not split. The FY2014 `Environmental` segment is the same shape
+and carries no stated description in the source, so R2 cannot fix a mapping for
+it either. This is the Marshalls/Viridian case again.
+
+### 7.6 Two defects found by running the pipeline against the curated files
+
+Both were found on the first end-to-end run, which had never happened before:
+`config/exposure.yaml` and the code were written before
+`data/exposure/policy_targets.csv` existed.
+
+**`Scope` had drifted out of the curated vocabulary.** The enum carried
+`domestic / commercial / both`; the curated file uses `all_domestic`,
+`domestic_prs`, `social_rented`, `off_gas_grid`, `new_build`. Every one of the
+30 target rows failed. Fixed — and it raised rather than coercing, which is why
+it was found in one run.
+
+**`PolicyTarget.scope` was parsed, validated and then never read.** No channel
+consulted it, so a listed private rented landlord scored full exposure to a
+social-rented mandate and a social housing REIT scored full exposure to the PRS
+track. **Resolved 2026-08-18 — the stock channels now gate on scope.** See
+§7.7.
+
+### 7.7 Scope gating, and what the tenure prefixes mean (2026-08-18)
+
+MEES binds by **tenure**, not by building type. That is why the curation
+separated `domestic_prs` from `social_rented` in the first place, and it is why
+the two must not score each other's instruments.
+
+**`residential_stock` now selects the band profile of the tenure the target
+names.**
+
+| Scope | Band profiles used |
+|---|---|
+| `all_domestic` | `dwellings_band_` + `dwellings_prs_band_` + `dwellings_social_band_`, summed |
+| `domestic_prs` | `dwellings_prs_band_` only |
+| `social_rented` | `dwellings_social_band_` only |
+| anything else | channel does not apply |
+
+`delivered_stock` applies only under `new_build`: a minimum-EPC mandate on let
+property binds whoever *holds* the stock, not whoever built it.
+
+**`product_revenue` and `domestic_supply` are deliberately not gated.** A
+manufacturer sells fabric and heating products into whichever tenure the
+subsidy or mandate stimulates, so its demand channel is reached by any domestic
+scope. Gating it would invent a distinction the firm's revenue disclosure does
+not make.
+
+**The generic `dwellings_band_` prefix means "tenure not disclosed", and it has
+teeth.** It scores only under `all_domestic`. A landlord curated without a
+tenure split therefore scores **nothing** at a tenure-specific event, rather
+than being assumed fully private rented — which would be a fabricated value
+under R5. The curator is forced to state the tenure, which is a disclosure,
+instead of the code assuming one. Nothing is lost today: no landlord band
+profile is curated yet, so there is nothing to migrate.
+
+**A PRS landlord's zero on a social-rented mandate is a measured zero**, not a
+false one: the instrument genuinely does not reach it. That is the R6
+distinction working, and it counts in the identification.
+
+### 7.8 `n` for the dose-response is 18 of 24, not 19
+
+Corrected 2026-08-18 and **pinned in a test**, because the last hand count of
+it was wrong by one.
+
+Targets naming neither a mandated band nor an affected category cannot be
+scored by any channel. They are now **skipped and counted** rather than scored
+as zero — a fabricated zero on every firm at those events would be rows
+carrying no information dragging β toward zero, and a blank band reaches
+`band_index`, which raises. `validate_exposure_inputs` downgrades them to a
+warning so a curator is not forced to delete the record of the retired
+`delivered_stock` channel just to make the loader work.
+
+Six events carry no scoreable target at all:
+
+| Event | Why blank |
+|---|---|
+| `zero-carbon-homes-cancelled` | new-build, no mandated band exists |
+| `fhs-2019-consultation` | ditto |
+| `fhs-2019-response` | ditto |
+| `part-l-2021-published` | ditto |
+| `fhbs-2023-consultation` | ditto |
+| **`epc-reform-consultation`** | **different reason** — it reforms the EPC *metric* rather than mandating a band, and carries no affected category either |
+
+The 2026-08-16 count of 19 took only the seven blank `new_build` rows and
+missed `epc-reform-consultation`. `ten-point-plan` and
+`future-homes-standard-2026` each lose an unscoreable leg but survive on a
+product leg.
+
+**The report must state 24 for the event dictionary and 18 for the
+dose-response**, or the six will read as a silent drop.
 
 ---
 

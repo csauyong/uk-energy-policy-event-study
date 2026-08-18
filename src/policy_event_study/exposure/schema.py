@@ -74,11 +74,41 @@ LIST_SEPARATOR: Final[str] = ";"
 
 
 class Scope(enum.StrEnum):
-    """Which building stock a policy reaches."""
+    """Which building stock a policy reaches.
 
-    DOMESTIC = "domestic"
-    COMMERCIAL = "commercial"
-    BOTH = "both"
+    The vocabulary is the curated one in `data/exposure/policy_targets.csv`.
+    It replaced an earlier ``domestic / commercial / both`` triple that no
+    curated row ever used: the study narrowed to domestic policy, so
+    ``commercial`` became dead, and ``domestic`` turned out to be too coarse
+    because MEES binds by *tenure* -- an instrument aimed at the private rented
+    sector does not reach a social landlord, and neither reaches new build.
+    Loading the curated file against the old triple raised on the first row,
+    which is how the drift was found.
+
+    **The stock channels gate on scope; the flow channels do not.** Until
+    2026-08-17 no channel read this field, so a listed private-rented landlord
+    scored full exposure to a social-rented mandate and vice versa. It is now
+    consumed by :func:`residential_stock_magnitude`, which selects the band
+    profile of the tenure the instrument names, and by
+    :func:`delivered_stock_magnitude`, which applies only to ``NEW_BUILD``.
+
+    ``product_revenue`` and ``domestic_supply`` are deliberately **not** gated.
+    A manufacturer sells fabric and heating products into whichever tenure the
+    subsidy or mandate stimulates, so its demand channel is reached by any
+    domestic scope; gating it would invent a distinction the firm's revenue
+    disclosure does not make.
+    """
+
+    #: Every domestic tenure: retrofit subsidy, supplier obligations, grants.
+    ALL_DOMESTIC = "all_domestic"
+    #: Privately rented homes only. The MEES track.
+    DOMESTIC_PRS = "domestic_prs"
+    #: Social rented homes only. Decent Homes Standard and social MEES.
+    SOCIAL_RENTED = "social_rented"
+    #: Homes off the gas grid: oil and LPG boiler phase-out.
+    OFF_GAS_GRID = "off_gas_grid"
+    #: New dwellings. Building regulations and the Future Homes Standard.
+    NEW_BUILD = "new_build"
 
 
 #: One vocabulary for policy direction across the project. Defined in
@@ -118,6 +148,25 @@ class PolicyTarget:
     direction: Direction
     mechanism: str = ""
     note: str = ""
+
+    @property
+    def is_scoreable(self) -> bool:
+        """Whether any channel can turn this target into a magnitude.
+
+        False when the row names neither a mandated band nor an affected
+        category. Eight such rows exist and they are deliberate: they are the
+        record of the `delivered_stock` exposure the design could not measure
+        (`reports/decision_log.md`, 2026-08-16), kept rather than deleted so
+        the gap is visible. They are skipped at scoring and counted, not
+        dropped silently and not scored as zero -- an unmeasurable exposure is
+        not a measured zero, and `docs/exposure_construction.md` section 3
+        turns on that distinction.
+
+        Scoring them would also crash: a blank band reaches
+        :func:`~policy_event_study.exposure.channels.band_index`, which raises
+        rather than guessing.
+        """
+        return bool(self.mandated_min_band or self.affected_categories)
 
 
 @dataclass(frozen=True)
@@ -250,11 +299,26 @@ def latest_by_attribute(
     is the one used -- selecting on `knowable_from` rather than on
     `as_of_date`, since a recently-published older figure is still the freshest
     public information.
+
+    **Ties on `knowable_from` are broken on `as_of_date`, and the tie is the
+    normal case rather than the exotic one.** R7 in
+    `docs/exposure_construction.md` requires a prior-year comparative to carry
+    the *later* report's `knowable_from`, so every attribute curated with a
+    comparative produces two rows sharing a publication date and differing only
+    in the period they describe. Ranking on `knowable_from` alone left that
+    pair unordered, and the winner was then decided by CSV row order: sorting
+    the file, or curating the comparative above the current year, silently
+    swapped the current-year figure for the prior-year one and moved every
+    score downstream of it. Among equally-public vintages the market had both
+    and would use the fresher period, so the greater `as_of_date` wins.
     """
     best: dict[tuple[str, str], FirmAttribute] = {}
     for attribute in attributes:
         key = (attribute.unit_id, attribute.attribute)
         current = best.get(key)
-        if current is None or attribute.knowable_from > current.knowable_from:
+        if current is None or (attribute.knowable_from, attribute.as_of_date) > (
+            current.knowable_from,
+            current.as_of_date,
+        ):
             best[key] = attribute
     return best

@@ -33,12 +33,37 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Final
 
-from policy_event_study.exposure.schema import FirmAttribute, PolicyTarget
+from policy_event_study.exposure.schema import FirmAttribute, PolicyTarget, Scope
 
 #: Attribute name for a firm's own build standard, as an EPC band.
 BUILD_STANDARD_ATTRIBUTE: Final[str] = "build_standard_band"
 UK_SHARE_ATTRIBUTE: Final[str] = "uk_revenue_share"
 DOMESTIC_SUPPLY_ATTRIBUTE: Final[str] = "domestic_supply_share_gb"
+
+#: Band-profile prefix for a landlord that does not split its stock by tenure.
+GENERIC_STOCK_PREFIX: Final[str] = "dwellings_band_"
+#: ...and the tenure-specific prefixes a landlord discloses instead.
+PRS_STOCK_PREFIX: Final[str] = "dwellings_prs_band_"
+SOCIAL_STOCK_PREFIX: Final[str] = "dwellings_social_band_"
+
+#: Which band profiles a residential landlord may be scored on, per scope.
+#:
+#: MEES binds by TENURE, not by building type, so the tenure the firm lets on
+#: is what decides whether an instrument reaches it. A scope absent from this
+#: map does not reach a residential landlord at all -- `new_build` is the
+#: housebuilder channel and `off_gas_grid` has no banded target row.
+#:
+#: The generic prefix means "domestic stock, tenure NOT disclosed" and appears
+#: only under `all_domestic`. That is deliberate and it has teeth: a landlord
+#: curated without a tenure split scores nothing at a tenure-specific event
+#: rather than scoring as though it were fully exposed. The curator is thereby
+#: forced to state the tenure, which is a disclosure, instead of the code
+#: assuming one, which would be a fabricated value under R5.
+STOCK_PREFIXES_BY_SCOPE: Final[Mapping[Scope, tuple[str, ...]]] = {
+    Scope.ALL_DOMESTIC: (GENERIC_STOCK_PREFIX, PRS_STOCK_PREFIX, SOCIAL_STOCK_PREFIX),
+    Scope.DOMESTIC_PRS: (PRS_STOCK_PREFIX,),
+    Scope.SOCIAL_RENTED: (SOCIAL_STOCK_PREFIX,),
+}
 
 
 def band_index(band: str, bands: Sequence[str]) -> int:
@@ -106,19 +131,36 @@ def residential_stock_magnitude(
     attributes: Mapping[str, FirmAttribute],
     target: PolicyTarget,
     bands: Sequence[str],
-    *,
-    prefix: str = "dwellings_band_",
 ) -> tuple[float, tuple[str, ...]] | None:
-    """Dose for a residential landlord or REIT.
+    """Dose for a residential landlord or REIT, for the tenure the policy binds.
 
-    Returns ``None`` when the firm has no dwelling profile at all -- meaning
-    the channel does not apply, not that the dose is zero.
+    **Gated on ``target.scope``** (see :data:`STOCK_PREFIXES_BY_SCOPE`). A
+    private-rented landlord is not reached by a social-rented mandate and a
+    social housing REIT is not reached by the PRS track, so each scores against
+    the band profile of its own tenure and a measured zero against the other.
+    Before 2026-08-17 scope was ignored and both scored fully against both.
+
+    Under ``all_domestic`` the tenure profiles are summed with the generic one,
+    which is the correct reading of an instrument that reaches every tenure.
+
+    Returns ``None`` when the channel does not apply: either the scope does not
+    reach residential landlords at all, or the firm discloses no band profile
+    for the tenure in question. That is not the same as a dose of zero, and
+    `docs/exposure_construction.md` section 3 turns on the difference.
     """
-    profile = _collect_stock(attributes, prefix, bands)
+    prefixes = STOCK_PREFIXES_BY_SCOPE.get(target.scope)
+    if prefixes is None:
+        return None
+
+    profile: dict[str, float] = {}
+    used: list[str] = []
+    for prefix in prefixes:
+        for band, count in _collect_stock(attributes, prefix, bands).items():
+            profile[band] = profile.get(band, 0.0) + count
+            used.append(f"{prefix}{band}")
     if not profile:
         return None
-    used = tuple(f"{prefix}{band}" for band in profile)
-    return share_below_band(profile, target.mandated_min_band, bands), used
+    return share_below_band(profile, target.mandated_min_band, bands), tuple(used)
 
 
 def delivered_stock_magnitude(
@@ -135,7 +177,16 @@ def delivered_stock_magnitude(
     discloses a build standard, that gap **caps** the dose: a builder already
     delivering at or above the mandate faces no compliance cost regardless of
     what its historic delivered profile looks like.
+
+    **Gated on ``target.scope``: only ``NEW_BUILD`` reaches a housebuilder.**
+    A minimum-EPC mandate on let property is an obligation on the holder of the
+    stock, not on whoever built it. The channel is retired in any case
+    (`reports/decision_log.md`, 2026-08-16) because no new-build instrument
+    states a mandated band, so this gate is belt and braces rather than load
+    bearing today.
     """
+    if target.scope is not Scope.NEW_BUILD:
+        return None
     profile = _collect_stock(attributes, prefix, bands)
     if not profile:
         return None

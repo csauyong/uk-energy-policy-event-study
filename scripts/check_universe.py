@@ -23,8 +23,8 @@ def main() -> int:
     print(universe.alignment_table().to_string(index=False))
     print()
     print(f"donors: {len(universe.donors)}   treated: {len(universe.treated)}")
-    print(f"lagged (close after LSE):      {list(universe.late_tickers)}")
-    print(f"early (uncorrectable, see §7): {list(universe.early_tickers)}")
+    print(f"lagged (close after LSE):      {list(universe.late_units)}")
+    print(f"early (uncorrectable, see §7): {list(universe.early_units)}")
     print(f"sector keys for the event CSV: {list(universe.sector_keys)}")
     return 0
 

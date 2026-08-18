@@ -27,7 +27,7 @@ fmt:  ## Auto-fix lint and format
 test:  ## Run the test suite with coverage
 	uv run pytest --cov --cov-report=term-missing
 
-check: lint test data-check events-check  ## Everything CI would run
+check: lint test data-check events-check universe-check  ## Everything CI would run
 
 data-check:  ## Fail if any data file has been committed (CLAUDE.md hard rule)
 	@# data/events/ is the one sanctioned exception -- the hand-curated event
