@@ -50,7 +50,7 @@ from __future__ import annotations
 import datetime as dt
 import enum
 from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Final
 
@@ -395,6 +395,59 @@ class Universe:
         for listing in self.all_listings:
             seen.setdefault(listing.source_ticker, None)
         return tuple(seen)
+
+    def without_units(self, unit_ids: Iterable[str]) -> Universe:
+        """Return a copy with `unit_ids` removed from every membership list.
+
+        `build_panel` refuses to assemble a panel unless a price frame exists
+        for every named unit, which is the right default: a unit that silently
+        vanished between the universe config and the panel is exactly the kind
+        of quiet loss this project keeps finding. But two names here are
+        **permanent** absences rather than accidents -- `PRSR.L` and `SIG.L`
+        were taken private or delisted and no vintage will ever carry them
+        (see `unresolved:` in `config/universe.yaml`).
+
+        So the drop is made here, explicitly, by a caller that has to name the
+        units it drops. That keeps `build_panel`'s guard strict while letting
+        an estimation run proceed, and leaves the removal visible in the
+        calling code rather than buried in a tolerant loader.
+
+        Raises
+        ------
+        KeyError
+            If the market index is named: the market model has no baseline
+            without it.
+        """
+        targets = set(unit_ids)
+        if self.market_index.unit_id in targets:
+            msg = (
+                f"cannot drop the market index {self.market_index.unit_id!r}; "
+                "the market model has no baseline without it"
+            )
+            raise KeyError(msg)
+
+        def keep(listings: tuple[Listing, ...]) -> tuple[Listing, ...]:
+            return tuple(item for item in listings if item.unit_id not in targets)
+
+        groups = tuple(
+            replace(group, members=keep(group.members)) for group in self.treated_groups
+        )
+        remaining = {
+            listing.unit_id: listing
+            for listing in (
+                *(member for group in groups for member in group.members),
+                *keep(self.donors),
+                *keep(self.excluded),
+                self.market_index,
+            )
+        }
+        return replace(
+            self,
+            treated_groups=groups,
+            donors=keep(self.donors),
+            excluded=keep(self.excluded),
+            _by_id=remaining,
+        )
 
     def listing(self, unit_id: str) -> Listing:
         """Look up a listing by unit id."""

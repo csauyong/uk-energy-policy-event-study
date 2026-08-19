@@ -2,7 +2,7 @@
 SHELL := /bin/bash
 PY := 3.11
 
-.PHONY: help setup lint fmt test check clean data-check events-check universe-check event-report sweep chronology shortlist audit finalise promote
+.PHONY: help setup lint fmt test check clean data-check events-check universe-check event-report sweep chronology shortlist audit finalise promote prices screening-universe estimate diagnostics
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -36,7 +36,8 @@ data-check:  ## Fail if any data file has been committed (CLAUDE.md hard rule)
 		| grep -v '\.gitkeep$$' \
 		| grep -v '^data/events/' \
 		| grep -v '^data/exposure/' \
-		| grep -v '^data/universe/uk_listed_universe\.csv$$' || true); \
+		| grep -v '^data/universe/uk_listed_universe\.csv$$' \
+		| grep -v '^data/universe/index_membership\.csv$$' || true); \
 	if [ -n "$$tracked" ]; then \
 		echo "ERROR: data files are tracked in git:"; echo "$$tracked"; exit 1; \
 	else \
@@ -72,6 +73,15 @@ promote:  ## Promote the a-priori inventory into the event dictionary (freeze st
 
 prices:  ## Pull and cache daily history for every named unit (acquisition only; Rule 0 firewall)
 	@uv run python scripts/pull_prices.py
+
+screening-universe:  ## Build the zero-exposure cross-section (needs network)
+	@uv run python scripts/build_screening_universe.py
+
+estimate:  ## Stack the CAR panel and fit the dose-response (cache-only, no network)
+	@uv run python scripts/run_dose_response.py
+
+diagnostics:  ## Leverage, drop path and the identification audit. Run after `estimate`
+	@uv run python scripts/run_diagnostics.py
 
 clean:  ## Remove caches and build artefacts
 	rm -rf .pytest_cache .ruff_cache .mypy_cache build dist *.egg-info htmlcov .coverage

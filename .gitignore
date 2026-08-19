@@ -45,6 +45,10 @@ data/events/briefing_cache/
 !data/exposure/README.md
 !data/universe/
 !data/universe/uk_listed_universe.csv
+# Index membership: a transcription of two published constituent lists, with
+# their source URLs. No program in this repo can regenerate it, so it is
+# source in the same sense the event dictionary is.
+!data/universe/index_membership.csv
 
 # Secrets
 .env

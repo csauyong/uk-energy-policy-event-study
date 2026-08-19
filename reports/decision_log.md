@@ -137,6 +137,13 @@ the split would produce a finding that is not one.| 43 | 2026-08-16 | B0 | Leak 
 | 64 | 2026-08-18 | B0 | `make universe-check` run | **Broken on HEAD**, and had been: it called `late_tickers` / `early_tickers`, which do not exist | fixed | `CLAUDE.md` §2 listed it under "what is working". It was not in `make check`, which is exactly why it rotted unnoticed. **Now in `make check`** |
 | 65 | 2026-08-18 | B1 | RESI.L proposed, HOME.L exclusion re-affirmed, ESP.L dropped | **No membership change** — recorded in `config/universe.yaml` as a proposal pending approval | pending owner | ReSI is the only candidate reaching both tenure tracks (retirement rentals on assured tenancies; shared ownership via a Registered Provider). Its managed wind-down from 2024 is a caveat with a direction. HOME.L's 1,476 rows are stale prints from a suspended line and would inject false zero returns |
 | 66 | 2026-08-18 | B1 | **Open: `score_firm` cannot distinguish "no channel applies" from "channel applies, input missing"** | Both land on `channel="none", magnitude=0` | **open — changes `n`** | Kingspan FY2022+ is the live instance: a genuinely unknown UK share is recorded as a measured zero exposure to UK insulation policy. §3 says a false zero attenuates beta while an absence merely shrinks `n`. Fixing it means the panel must emit "applicable but unknown", which changes the estimand and so is not done silently |
+| 67 | 2026-08-19 | B1 | **Genuit back-vintage FY2023 curated** | 4 new attribute rows; identifying events **6 → 8**, effective identifying rows **6.48 → 8.59** | kept | The FY2024-comparative row's own note asked for exactly this: the FY2023 figures entered the market on 2024-03-11 with the FY2023 results, not on 2025-03-10 with the FY2024 results. Correcting `knowable_from` by one year buys `autumn-budget-2024` and `chmm-delayed` |
+| 68 | 2026-08-19 | B1 | **Genuit cannot be curated before 2024-03-11, at any price** | `revenue_share_heating_ventilation` ABSENT for FY2013–FY2022 per R1a | kept | Until the FY2023 results Genuit/Polypipe reported two END-MARKET segments — Residential Systems and Commercial and Infrastructure Systems — and no product split. The affected category **did not exist as a disclosed quantity**. This is a disclosure fact, not a curation backlog |
+| 69 | 2026-08-19 | B1 | **Marshalls and Ibstock back-vintages DEPRIORITISED — curating them is a numerical no-op** | Verified by construction: curated measured zero and default zero both give `magnitude=0.0`, `signed=0.0` | kept | A firm with no knowable attribute already falls through `score_firm` to an explicit zero. Only the `channel` label differs and no label enters the regression. **This falsifies the premise of `CLAUDE.md` §5 step 1**, which put these two alongside Genuit as "the whole game" |
+| 70 | 2026-08-19 | B1 | **Rockwool `uk_revenue_share` ABSENT in every vintage, with a bound** | UK revenue is **below 10% of group**, so the magnitude is bounded above by 0.7865 × 0.10 = **0.0786** | kept | "In Germany, France, and the United States revenue amount to between 10-15 percent … In no other country does revenue exceed 10 percent." Identical wording FY2020, FY2021, FY2024. Rockwool would be the second-largest exposure in the sample if the figure existed. It does not, in any year |
+| 71 | 2026-08-19 | B1 | **The channel's discriminating variable is unobservable exactly where it discriminates** | Structural, not effort-limited — see `results.md` §4.5 | recorded as a finding | `product_revenue = affected share × UK share`. Every multinational in the sample is below its own IFRS 8 country-materiality threshold in the UK, so none discloses a UK figure: Kingspan bounded < 15% from FY2022, Rockwool < 10% always. The firms that *do* disclose it are UK-domiciled with a share near 1.0, where the multiplier does no work |
+| 72 | 2026-08-19 | B0 | Saint-Gobain fetch attempted | `saint-gobain.com` returns **HTTP 403** to the tooling | blocked, not absent | Same class as the blocked news outlets in the leak protocol. A transport failure must not be recorded as a disclosure failure — that is the distinction `PriceSourceUnreachableError` exists to protect elsewhere |
+| 73 | 2026-08-19 | B2 | Re-ran `make estimate` and `make diagnostics` after the curation | β = −0.00057, p_wild = 0.52; Budget-2025 sensitivity β = −0.00044, p = 0.63 | **still not a result** | `effective_identifying_rows` 8.59 of 692, top-10 rows carry 97.0% of the weight, still **2** exposed firms. The handover's rule applies unchanged: single digits means the p-value means nothing. The curation moved the number in the right direction and nowhere near far enough |
 
 
 ### Leak protocol: executed with deviation (2026-08-16)
@@ -241,3 +248,49 @@ row, it is one-sided.
 `residential_stock`. `domestic_supply` remains zero by design (§2.1);
 `delivered_stock` now joins it as a channel carried in the config and reported
 as unmeasurable rather than deleted.
+
+---
+
+## 2026-08-18 — Scope reduction to reach a first estimate, and what it found
+
+Six decisions taken together, to move the project from a finished pipeline
+with no result to a result with a stated limitation. The owner approved the
+four marked **simplification** before any of it was run.
+
+| # | Date | Phase | What was tried | Result | Kept? | Note |
+|---|------|-------|----------------|--------|-------|------|
+| 41 | 2026-08-18 | C1 | Drop `book_to_market` from `DEFAULT_CONTROLS` | Removes the entire point-in-time fundamentals workstream | **simplification** | Direction stated: exposure concentrates in value-tilted building-products names, so any unabsorbed value premium loads onto β, biasing it **away from zero**. β is an **upper bound**. `estimators/controls.py` |
+| 42 | 2026-08-18 | C1 | `size` = log average daily GBP turnover, not market capitalisation | Point-in-time by construction | **simplification** | Share counts are only available at today's vintage; applying them to a 2015 price manufactures a market cap that never existed, with a look-ahead, since buybacks follow these events |
+| 43 | 2026-08-18 | C1 | Retire the `residential_stock` channel | Study becomes one-sided | **simplification** | Grainger alone at all three `domestic_prs` events (Civitas delisted 2023-08-04; Unite ≈0 on two independent grounds; `RESI.L` not approved). A falsification test resting on one firm is not one. Code and tests kept, as `delivered_stock` was |
+| 44 | 2026-08-18 | C1 | Screening universe at FTSE-350 scale (~150–250 names) rather than "several hundred" | Builder written and tested; **not yet run** — no network in the build environment | **simplification** | Justified by this project's own §2.5 finding: 100 → 600 firms moves the MDE by under 5%. `data/screening.py`, `scripts/build_screening_universe.py` |
+| 45 | 2026-08-18 | C1 | `load_cached_prices`: vintage-pinned, network-free price loading | Estimation reproduces from a fixed vintage instead of from whatever the source serves today | pre-registered | `fetch_prices` silently falls back to the network on a cache miss, which made every estimation run quietly connectivity-dependent |
+| 46 | 2026-08-18 | C1 | `Universe.without_units` | `PRSR.L` and `SIG.L` dropped explicitly by a named caller | pre-registered | Keeps `build_panel`'s strict guard intact rather than weakening it to tolerate two permanent delistings |
+| 47 | 2026-08-18 | C2 | **First dose-response estimate**, window (0,+1), Rademacher weights | β = −0.000092, se 0.001116, p 0.94 (cluster), 0.94 (wild bootstrap), 0.94 (randomisation). MDE 0.313% | trial | Reported in `reports/results.md`. **Not the headline** — see row 49 |
+| 48 | 2026-08-18 | C2 | Pre-registered Budget-2025 sensitivity, per `CLAUDE.md` §5 step 4 | β = +0.000183 excluding `budget-2025-eco-abolished`; a shift of ~3× the point estimate | pre-registered | Both reported; neither called the headline |
+| 49 | 2026-08-18 | C2 | **Identification audit** — Frisch-Waugh leverage on β, drop path, leave-one-event-out | **The null is uninformative.** 7 non-zero exposure rows of 692; 6 identifying events of 18; 2 exposed firms; top 10 rows carry 97% of the weight on β; **6.5 effective identifying rows**. β not identified at all once both exposed firms are dropped; sign flips on removing any single event | **kept as the finding** | This is what the report says, in place of the null. New: `scripts/run_diagnostics.py` |
+
+### Row 49 is the result of this session
+
+The regression's own `n_observations = 682` and `n_events = 17` are honest
+counts and are badly misleading, because a row whose exposure is exactly zero
+contributes nothing to the exposure gradient beyond pinning its event fixed
+effect. Nothing in the estimator's output surfaced the gap between 682 and 6.5.
+
+That is the same class of defect as the design-effect MDE that was 5.6× too
+optimistic (recorded earlier in this log): a plausible-looking number whose
+input was not describing what a reader would assume. It was caught by building
+the diagnostic, not by inspecting the estimate.
+
+**Consequence for the remaining work.** The binding constraint is not power,
+not the event dictionary, and not the screening universe. It is that every
+Genuit, Marshalls and Ibstock attribute is `knowable_from` March 2025, so the
+point-in-time filter correctly withholds them from the eighteen events that
+pre-date it, leaving Kingspan as the only firm with pre-2025 vintages.
+
+**The fix is more vintages of the firms already curated, not more firms.**
+
+### Correction
+
+| # | Date | Phase | What was tried | Result | Kept? | Note |
+|---|------|-------|----------------|--------|-------|------|
+| 50 | 2026-08-18 | C0 | Recount the event grouping from the frozen dictionary | **24 events → 21 groups** at the 14-day default, not 18 as `README.md` and `CLAUDE.md` both stated | correction | The 18 figure was stale. Both files corrected. Group count drives the bootstrap p-value floor and the MDE, so an over-stated collapse would have over-stated the clustering |

@@ -643,3 +643,70 @@ def test_six_events_cannot_be_scored_at_all() -> None:
         "ten-point-plan",
         "future-homes-standard-2026",
     }
+
+
+def test_curating_a_measured_zero_is_a_numerical_no_op(config: ExposureConfig) -> None:
+    """Pinned arithmetic: it reordered the work list, so it gets a test.
+
+    `HANDOVER.md` and `CLAUDE.md` §5 both named back-vintage curation for
+    Genuit, Marshalls and Ibstock as the highest-return work available, worth
+    "6 to plausibly 15+" identifying events. For Marshalls and Ibstock that is
+    false, and the reason is arithmetic rather than effort.
+
+    Both are measured zeros on every affected category. A firm with no knowable
+    attribute already falls through :func:`score_firm` to an explicit zero, so
+    a curated measured zero and an uncurated default zero produce the *same*
+    `exposure_magnitude` and the *same* `exposure_signed`. Only `channel`
+    differs, and no channel label enters the regression.
+
+    Curating those vintages improves the audit trail. It cannot move
+    identification. See `reports/results.md` §6 and decision log row 69.
+    """
+    curated = {
+        "revenue_share_insulation": attribute(
+            "MSLH.L", "revenue_share_insulation", 0.0
+        ),
+        "revenue_share_heating_ventilation": attribute(
+            "MSLH.L", "revenue_share_heating_ventilation", 0.0
+        ),
+        "uk_revenue_share": attribute("MSLH.L", "uk_revenue_share", 0.9977),
+    }
+    uncurated = score_firm("MSLH.L", {}, target(), config)
+    measured = score_firm("MSLH.L", curated, target(), config)
+
+    assert uncurated.magnitude == measured.magnitude == 0.0
+    assert uncurated.signed == measured.signed == 0.0
+    # The only thing curation buys is the audit trail.
+    assert uncurated.channel == "none"
+    assert measured.channel == "product_revenue"
+
+
+def test_genuit_cannot_score_before_its_segment_reorganisation() -> None:
+    """The affected category did not exist as a disclosed quantity before FY2023.
+
+    Genuit/Polypipe reported two *end-market* segments — Residential Systems and
+    Commercial and Infrastructure Systems — until the FY2023 results of
+    2024-03-11 reorganised into SBS/WMS/CMS. Climate Management Solutions is the
+    line that maps to `heating_ventilation`, so no earlier vintage can be
+    curated: R1a, and decision log row 68.
+
+    This pins the *curation*, not the code: it fails if someone back-fills a
+    pre-FY2023 Genuit affected-category share, which would be a fabricated
+    value under R5.
+    """
+    from policy_event_study.exposure.build import (
+        parse_exposure_inputs,
+        read_exposure_inputs,
+    )
+
+    attributes_frame, targets_frame = read_exposure_inputs()
+    attributes, _, _ = parse_exposure_inputs(attributes_frame, targets_frame)
+
+    affected = [
+        a
+        for a in attributes
+        if a.unit_id == "GEN.L" and a.attribute.startswith("revenue_share_")
+    ]
+    assert affected, "Genuit should carry affected-category rows"
+    earliest = min(a.knowable_from for a in affected)
+    assert earliest == pd.Timestamp("2024-03-11")

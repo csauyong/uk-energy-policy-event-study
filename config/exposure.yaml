@@ -39,6 +39,41 @@ meta:
 channels:
 
   residential_stock:
+    # RETIRED 2026-08-18. Carried as unmeasurable, exactly as delivered_stock
+    # is, and for the same reason: the code and its tests are correct and are
+    # kept, but no attribute is curated against it and it contributes no row
+    # to the estimation panel.
+    #
+    # WHY. The channel exists to carry the falsification test: a minimum-EPC
+    # mandate should move insulation makers UP and residential landlords DOWN,
+    # and a signed measure that finds both is far harder to explain away than
+    # one that finds only the first. That test needs landlords.
+    #
+    # There is one. At the three `domestic_prs` events the channel is Grainger
+    # alone: Civitas (CSH.L) delisted 2023-08-04, before all three; Unite
+    # (UTG.L) is resolved at approximately zero on two independent grounds --
+    # domestic MEES binds only on assured and regulated tenancies under Energy
+    # Act 2011 s.42(1)(a) and PBSA is generally let outside that regime, and
+    # even granting full scope Unite's disclosed portfolio is >99% EPC A-C.
+    # `RESI.L` was the one proposed addition and was not approved; it entered
+    # managed wind-down on a 2024 shareholder vote, so its post-2024 returns
+    # are driven by asset realisations rather than by policy.
+    #
+    # A falsification test resting on one firm is not a falsification test.
+    # Reporting it as one would be the more damaging option, so the channel is
+    # retired and the study is explicitly one-sided.
+    #
+    # DIRECTION OF THE CONSEQUENCE. The study now tests only the positive leg
+    # -- product-revenue exposure to a tightening should move prices up. It
+    # cannot distinguish "policy moves exposed firms" from "something else
+    # moved building-products names on those dates". That is a weaker claim
+    # than the two-sided design would have supported, and `reports/results.md`
+    # states it as such rather than presenting the surviving leg as the whole
+    # test.
+    retired: 2026-08-18
+    retired_reason: >
+      Down to Grainger alone at all three domestic_prs events. See the comment
+      above and reports/decision_log.md.
     description: >
       Residential landlords and REITs. Dose is the dwelling-weighted share of
       the held portfolio sitting BELOW the band the policy mandates: that is

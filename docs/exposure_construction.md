@@ -10,9 +10,11 @@ Machine-readable counterparts: [`config/exposure.yaml`](../config/exposure.yaml)
 [`src/policy_event_study/exposure/`](../src/policy_event_study/exposure/).
 Where this document and the code disagree, the code wins and this file is the bug.
 
-**Status: schema and channels complete, curation outstanding.**
-`data/exposure/firm_attributes.csv` and `data/exposure/policy_targets.csv`
-ship header-only.
+**Status (2026-08-19): schema and channels complete; curation largely
+exhausted rather than incomplete.** `firm_attributes.csv` carries 31 rows over
+5 firms and `policy_targets.csv` 30 targets over 24 events. Two firms carry
+every non-zero score, and §7.9 shows why a third is not obtainable from the
+disclosure record.
 
 ---
 
@@ -658,6 +660,70 @@ product leg.
 
 **The report must state 24 for the event dictionary and 18 for the
 dose-response**, or the six will read as a silent drop.
+
+### 7.9 The UK multiplier is unobservable where it discriminates (2026-08-19)
+
+§7.4 predicted that `uk_revenue_share` "is the attribute that moves the
+exposure ranking most, and it is least available exactly where it matters
+most". That is now measured across every firm in the channel, and it is
+stronger than a curation problem — it is a property of what firms publish.
+
+Under IFRS 8 a country is named only when it clears a materiality threshold.
+For the multinationals in this sample, the UK does not clear it:
+
+| Firm | UK revenue disclosed? | The firm's own threshold |
+|---|---|---|
+| Kingspan | FY2014–FY2021 only | "where revenue exceeds **15%** of total Group revenues" |
+| Rockwool | **never, any year** | "In no other country does revenue exceed **10%** of the Group's total revenue" — FY2020, FY2021, FY2024 |
+| Genuit | yes, ~0.89 | UK-domiciled; revenue by destination given directly |
+| Marshalls | yes, ~1.00 | UK-domiciled |
+| Ibstock | effectively 1.00 | UK-domiciled |
+| Saint-Gobain | **unknown** | publisher returns HTTP 403 to the tooling — **blocked, not absent** |
+| Travis Perkins | ~1.00, and moot | merchant; affected category is an unsplit subset (R1a) |
+
+**So the multiplier ranges 0.89–1.00 among the firms that disclose it, and is
+unpublished among the firms where it would cut a magnitude by 85%.** A variable
+that is only observable when it is close to 1 cannot discriminate.
+
+The non-disclosures are **bounds, not holes**, and they bound the thing that
+matters:
+
+| Firm | Affected share | UK bound | Magnitude bound |
+|---|---|---|---|
+| Rockwool FY2024 | 0.7865 | < 0.10 | **< 0.0786** |
+| Kingspan FY2024 | 0.2120 | < 0.15 | **< 0.0318** |
+| Genuit FY2024 | 0.2879 | 0.8895 measured | 0.2561 |
+
+Even a perfect resolution would add two firms and leave Genuit the largest
+exposure by a factor of three. `reports/results.md` §4.5 sets out the two
+honest routes: drop the multiplier and restrict to UK-domiciled firms
+(pre-registered, a new specification), or report the measurement finding as the
+result.
+
+### 7.10 Genuit's affected category does not exist before FY2023
+
+Until the FY2023 results of 2024-03-11, Genuit — Polypipe until 2021 — reported
+**two end-market segments**: Residential Systems and Commercial and
+Infrastructure Systems. Heating and ventilation sat inside Residential Systems
+alongside drainage, plumbing and building products, unsplit.
+
+> "From 1 January 2023, reporting segments have been … reorganised into three
+> segments — Sustainable Building Solutions, Water Management Solutions and
+> Climate Management Solutions … The prior year comparatives have been restated
+> to the three divisions."
+
+R1a therefore makes `revenue_share_heating_ventilation` **ABSENT** for FY2013
+through FY2022, and no back-vintage curation can change that: there is no
+disclosed quantity to record. The FY2022 figure exists only as a restatement
+inside the FY2023 report and carries that report's `knowable_from` under R7.
+
+**A measured zero back-vintage is a numerical no-op.** Marshalls and Ibstock
+are measured zeros on every affected category. `score_firm` already returns an
+explicit zero for a firm with no knowable attribute, so a curated zero and a
+default zero produce the same `exposure_magnitude` and the same
+`exposure_signed`; only the `channel` label differs, and no label enters the
+regression. Curating them improves the audit trail and cannot move
+identification. Pinned in `tests/test_exposure.py`.
 
 ---
 

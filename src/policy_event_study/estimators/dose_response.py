@@ -76,17 +76,29 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-#: Controls required unless the caller explicitly overrides. `size` and
-#: `book_to_market` guard against beta picking up a value or size tilt;
-#: `momentum` against a trend; `pre_event_vol` against exposure proxying for
-#: riskiness, which for small-cap building-products names it plausibly would.
 #: Dense float array. Named so the casts around numpy's untyped linalg
 #: functions say what they mean.
 FloatArray: TypeAlias = "np.ndarray[Any, np.dtype[np.float64]]"
 
+#: Controls required unless the caller explicitly overrides. `size` guards
+#: against beta picking up a size tilt; `momentum` against a trend;
+#: `pre_event_vol` against exposure proxying for riskiness, which for
+#: small-cap building-products names it plausibly would.
+#:
+#: `book_to_market` WAS the fourth and was dropped on 2026-08-18. It is the
+#: only one of the four that cannot be computed from a price series: it needs
+#: point-in-time book values, and acquiring those was the largest workstream
+#: standing between a finished pipeline and any result at all.
+#:
+#: The omission has a stated direction. Exposure here concentrates in
+#: building-products and housebuilding names, which carry a value tilt, and
+#: value earns a positive average premium. Any of that premium `size`,
+#: `momentum` and `pre_event_vol` fail to absorb is loaded onto beta, biasing
+#: it **away from zero**. So the estimate is an **upper bound** on the policy
+#: channel: a null is strengthened by the omission, and a positive result must
+#: be read as a ceiling. Full reasoning in `estimators/controls.py`.
 DEFAULT_CONTROLS: Final[tuple[str, ...]] = (
     "size",
-    "book_to_market",
     "momentum",
     "pre_event_vol",
 )

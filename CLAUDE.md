@@ -8,14 +8,42 @@ results kept, no P&L without a cost model.
 Read [`README.md`](README.md) first for what the project is. This file is
 what a new session needs to pick the work up.
 
-**Status as of 2026-08-18:** event dictionary frozen and tagged, prices
-pulled, exposure curation in progress. **Kingspan is resolved (§3.1); the
-exposure pipeline now loads the curated files under `strict=True` for the first
-time and the three blockers that run surfaced are all closed (§3.3).**
-Estimation is blocked on more than exposure: the screening universe is empty
-and no CAR panel or controls exist (§3.4). 311 tests, `ruff` and
-`mypy --strict` clean; `make universe-check` was broken on HEAD, is fixed, and
-is now inside `make check`.
+**Status as of 2026-08-19: THE ESTIMATE RUNS, AND THE BINDING CONSTRAINT HAS
+BEEN IDENTIFIED AS A DISCLOSURE GAP, NOT A CURATION BACKLOG.**
+
+`make estimate` and `make diagnostics` work end to end. The result and the
+audit behind it are in **`reports/results.md`**, which is the first thing to
+read after `README.md`.
+
+**The headline is not the coefficient.** β = −0.057% with p = 0.52 across 682
+rows looks like a well-powered null against a 0.26% MDE. It is not one. **Nine**
+rows carry non-zero exposure, **two** firms account for all nine, and the
+effective count of identifying observations is **8.6**. Drop Genuit and β flips
+sign; drop Genuit and Kingspan and β does not exist.
+
+**What changed on 2026-08-19, and it reorders everything.** The previous
+handover named back-vintage curation for Genuit, Marshalls and Ibstock as "the
+whole game", worth 6 → 15+ identifying events. Tested:
+
+- **Marshalls and Ibstock: a numerical no-op.** Both are measured zeros on every
+  affected category, and a curated zero and an uncurated default zero give the
+  *same* `exposure_magnitude` and `exposure_signed`. Verified by construction.
+- **Genuit: bounded, and delivered.** Its affected category did not exist as a
+  disclosed quantity before the FY2023 results — two end-market segments until
+  then. Curating that one vintage moved identifying events **6 → 8**, effective
+  rows **6.5 → 8.6**, and β six-fold.
+- **The real constraint: `product_revenue` is affected-share × UK-share, and
+  every multinational in the sample sits below its own IFRS 8 country-
+  materiality threshold in the UK.** Kingspan bounded below 15% from FY2022;
+  Rockwool below 10% in every year; neither publishes a figure. The firms that
+  do publish one are UK-domiciled with a share near 1.0, where the multiplier
+  does nothing. **The measure's discriminating variable is unobservable exactly
+  where it discriminates** — `results.md` §4.5.
+
+So: **the dose-response is not identified, and no quantity of curation hours
+fixes it.** The next decision is a design choice, not a data-entry task.
+
+361 tests, `ruff` and `mypy --strict` clean.
 
 ---
 
@@ -25,11 +53,13 @@ is now inside `make check`.
 |---|---|
 | Universe (treated / donor / excluded) | **Working.** Per-event status overrides, 57 source tickers |
 | Event discovery | **Working.** Deductive, from published chronologies |
-| Event dictionary | **Frozen and tagged** — `events-frozen-2026-08-16`, 24 events → 18 groups |
+| Event dictionary | **Frozen and tagged** — `events-frozen-2026-08-16`, 24 events → **21 groups** (the 18 previously stated here was stale; decision log row 50) |
 | Leak searches | **Done**, with a stated deviation (§4) |
 | Price acquisition | **Working.** 55 of 57 tickers; two genuine delistings |
-| Exposure curation | **In progress.** This is the blocker |
-| Dose-response estimation | **Blocked** on exposure |
+| Exposure curation | **Largely exhausted, not incomplete.** 2 firms carry every non-zero score and §5 explains why a third is not available |
+| CAR panel + controls | **Working.** `estimators/car_panel.py`, `estimators/controls.py` |
+| Screening universe | **Builder written and tested; not yet run.** Needs one command on a networked machine |
+| Dose-response estimation | **Runs.** Result in `reports/results.md`; not identified — see §3 |
 | Synthetic control / SDiD | **Parked deliberately** — retained as robustness, not deleted |
 
 ### The design changed once, on purpose
@@ -116,7 +146,7 @@ at every vintage per R1a (ventilation sits inside an unsplit `Light & Air`).
 
 | Channel | Live treated names | State |
 |---|---|---|
-| `product_revenue` | 7 (was 8) | Genuit and Kingspan complete. Marshalls/Ibstock partial. Rockwool, SIG, Saint-Gobain, Travis Perkins not started |
+| `product_revenue` | 7 (was 8) | Genuit (FY2021–FY2024) and Kingspan (FY2014–FY2024) curated. Marshalls/Ibstock measured zeros — further vintages **deprioritised, a no-op**. Rockwool UK share **ABSENT, bounded < 0.10**. SIG no price series. Saint-Gobain **BLOCKED (403)**. Travis Perkins R1a → ABSENT |
 | `residential_stock` | **1 at the events that matter** | **Effectively Grainger alone** — see §3.3 |
 | `delivered_stock` | 9 | Retired 2026-08-16; carried as unmeasurable |
 | `domestic_supply` | 4 | Scores zero by design; sign undeterminable ex ante |
@@ -195,35 +225,51 @@ twice. Adding six URLs to the inventory's §6 recovers them.
 
 ## 5. Next steps, in order
 
-~~1. Fill Kingspan's `uk_revenue_share`.~~ **Done 2026-08-17** — §3.1.
-~~2. Check Unite Group's exposure to domestic MEES.~~ **Done** — §3.3.
+**Rewritten 2026-08-19.** The previous first item — curate back-vintages for
+Genuit, Marshalls and Ibstock, "this is the whole game", worth 6 → 15+
+identifying events — was tested. It is **wrong for two of the three firms**,
+and the reason is arithmetic, not effort. `reports/results.md` §4.5 and §6
+carry the evidence; decision log rows 67–71.
 
-1. **Decide the landlord channel's membership.** With Grainger alone at the
-   three `domestic_prs` events the falsification test is not credible. The one
-   proposed addition is `RESI.L` (Residential Secure Income): retirement
-   rentals on assured tenancies plus shared ownership through a Registered
-   Provider, so it reaches *both* MEES tracks. Caveats: it entered managed
-   wind-down on a 2024 shareholder vote and sold the retirement portfolio in
-   2026, so post-2024 returns are driven by asset realisations rather than by
-   policy — noise if the disposals are unrelated to the event dates, bias if
-   they are not. **`HOME.L` should stay excluded**: trading was suspended amid
-   an accounting investigation, so its 1,476 rows are stale prints rather than
-   evidence it is usable, and they would inject false zero returns.
-   **Adding any ticker needs the owner's approval, so RESI.L is recorded in
-   `config/universe.yaml` as a proposal and is NOT a member.**
-2. **Finish `product_revenue` curation**, then `residential_stock`.
-   `delivered_stock` is retired.
-3. **Build the screening universe, the CAR panel and the controls** (§3.4).
-   The dose-response cannot run without these, whatever the exposure state.
-4. **Run the dose-response estimate**, with the pre-registered Budget-2025
-   sensitivity (estimate with and without that event; report both).
-5. **Then** the robustness section: SC and SDiD on the lowest-anticipation
-   events, plus conformal inference, which escapes the `1/(N+1)` floor.
+What was actually delivered from that item: Genuit's FY2023 vintage, the one
+row of it that could work. It moved identifying events **6 → 8**, effective
+identifying rows **6.5 → 8.6**, and β **six-fold**. That is the measured
+return on the best available curation row, and it is why the rest of the old
+list has been retired rather than reordered.
 
-**Do not** extend the sweep to HMT. **Do not** run SC/SDiD before step 4.
-Both were explicit instructions and both have reasons recorded above.
+1. **Decide between the two design routes in `results.md` §4.5.** This is now
+   the first question rather than the last, because the binding constraint is
+   a *disclosure* gap, not a curation backlog: `product_revenue` is
+   affected-share × UK-share, and every multinational in the sample sits below
+   its own IFRS 8 country-materiality threshold in the UK, so none publishes a
+   UK figure. Kingspan is bounded below 15% from FY2022; Rockwool below 10% in
+   every year. **The multiplier is unobservable exactly where it
+   discriminates.** Route 1 — drop the multiplier, restrict to UK-domiciled
+   firms — must be pre-registered before it is run. Route 2 reports the
+   measurement finding as the deliverable, which `../CLAUDE.md` §5 explicitly
+   sanctions.
+2. **Curate Saint-Gobain**, the last firm that might carry a UK figure.
+   `saint-gobain.com` returns **HTTP 403** to the tooling, so it needs a fetch
+   from elsewhere. Recorded as **BLOCKED, not ABSENT** — a transport failure
+   must never be written down as a disclosure failure.
+3. **Run `make screening-universe`** on a networked machine, then re-run
+   `make estimate && make diagnostics`. Read `effective_identifying_rows` in
+   `reports/tables/identification.json` **before** reading β.
+4. **Only then** the robustness section: SC and SDiD on the lowest-anticipation
+   events.
 
----
+**Retired from this list, each with its evidence:**
+
+| Retired | Why |
+|---|---|
+| Marshalls and Ibstock back-vintages | Measured zeros on every affected category. A curated zero and an uncurated default zero produce the **same** `exposure_magnitude` and `exposure_signed`; only the `channel` label differs, and no label enters the regression. Verified by construction |
+| Genuit vintages before FY2023 | Genuit/Polypipe reported two **end-market** segments until the FY2023 results (2024-03-11). The affected category did not exist as a disclosed quantity. R1a |
+| Travis Perkins | Merchant reporting by end market; insulation and heating are proper subsets of an unsplit segment (R1a → ABSENT), and its UK share of ~1.0 would do no work |
+
+**Do not** extend the sweep to HMT. **Do not** run SC/SDiD until something is
+identified — the condition has not been met and 8.6 effective rows is not it.
+**Do not** quote β, the MDE, or a placebo distribution without the identifying
+row count beside it.
 
 ## 6. Working agreements for this repo
 

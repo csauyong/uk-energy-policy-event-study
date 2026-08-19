@@ -6,6 +6,34 @@ prices of the companies they affect — and can we measure it honestly?**
 That is the whole question. This repository is the machinery for answering it
 without fooling ourselves, which turns out to be most of the work.
 
+## The answer, as of 2026-08-18
+
+**Not yet — and the interesting part is why not.**
+
+The regression runs end to end. It returns β = −0.0092% per standard deviation
+of exposure, p = 0.94, across 682 firm-event observations and 17 clusters,
+against a minimum detectable effect of 0.31%. That reads like a clean,
+well-powered null.
+
+**It isn't one.** Of those 682 rows, **seven** carry a non-zero exposure score,
+and two firms account for all seven. A Frisch-Waugh decomposition puts 97% of
+the weight on β on ten rows, and the effective count of identifying
+observations at **6.5**. Drop one firm and β moves by a factor of 22; drop two
+and it ceases to exist at all.
+
+So the honest finding is not *"policy announcements don't move exposed
+prices"*. It is:
+
+> The dose-response estimand is not identified on the exposure data curated so
+> far. The binding constraint is exposure curation — specifically, missing
+> back-vintages for firms already curated — and it is neither statistical
+> power nor the event dictionary.
+
+The full audit is in **[`reports/results.md`](reports/results.md)**, including
+what would fix it and in what order. The project's own diagnostics are what
+caught this. Without them the number would have been published as a null, and
+the null would have been wrong.
+
 ---
 
 ## The idea in one page
@@ -64,14 +92,16 @@ date — no data is committed except hand-curated work that no program could
 regenerate.
 
 ```
-  1. DISCOVER      make chronology    find candidate policy announcements
-  2. AUDIT         make audit         check nothing obvious is missing
-  3. SHORTLIST     make shortlist     filter by rule to a manageable list
-  4. FINALISE      make finalise      apply hand curation, verify dates
-  5. PROMOTE       make promote       write the frozen event dictionary
-  6. INSPECT       make event-report  timing, grouping and statistical power
-  7. PRICES        make prices        download share price history
-  8. ESTIMATE      (blocked — see below)
+  1. DISCOVER      make chronology            find candidate announcements
+  2. AUDIT         make audit                 check nothing obvious is missing
+  3. SHORTLIST     make shortlist             filter by rule to a short list
+  4. FINALISE      make finalise              hand curation, verify dates
+  5. PROMOTE       make promote               write the frozen event dictionary
+  6. INSPECT       make event-report          timing, grouping, statistical power
+  7. PRICES        make prices                download share price history
+  8. UNIVERSE      make screening-universe    build the zero-exposure cross-section
+  9. ESTIMATE      make estimate              stack CARs, fit the dose-response
+ 10. DIAGNOSE      make diagnostics           leverage, drop path, identification
 ```
 
 ### 1. Discovery — how we find announcements
@@ -114,7 +144,11 @@ finding, was the real weakness.
 Two announcements a fortnight apart are not two independent observations —
 they share trading days. They are collapsed into one **group**, and all the
 statistics are computed from the number of groups, not the number of events.
-Currently **24 events → 18 groups**.
+Currently **24 events → 21 groups** at the 14-day default spacing.
+
+(An earlier draft of this README and of `CLAUDE.md` said 18 groups. That figure
+was stale — recomputing it from the frozen dictionary gives 21. Corrected
+2026-08-18 and recorded in `reports/decision_log.md`.)
 
 ### 7. Prices
 
@@ -164,6 +198,7 @@ Read next:
 
 | Document | What it covers |
 |---|---|
+| [`reports/results.md`](reports/results.md) | **The result, and the audit showing why it is not yet informative** |
 | [`CLAUDE.md`](CLAUDE.md) | Current status, what works, what doesn't, next steps |
 | [`docs/event_curation_protocol.md`](docs/event_curation_protocol.md) | How events are chosen, and the rules that stop us cheating |
 | [`docs/exposure_construction.md`](docs/exposure_construction.md) | How company exposure is scored |

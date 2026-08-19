@@ -353,6 +353,40 @@ def _cache_path(ticker: str, vintage: str) -> Path:
     return YFINANCE_CACHE / f"{safe}__{vintage}.parquet"
 
 
+def load_cached_prices(
+    tickers: Sequence[str], *, vintage: str
+) -> tuple[dict[str, pd.DataFrame], tuple[str, ...]]:
+    """Read cached history for `tickers`, touching no network at all.
+
+    `fetch_prices` prefers the cache but falls back to the network on a miss,
+    which makes an estimation run silently dependent both on connectivity and
+    on whatever Yahoo serves *today* rather than at `vintage`. Estimation must
+    be reproducible from a fixed vintage, so it uses this instead.
+
+    A missing ticker is **returned, not raised on**. Two symbols in this
+    project's universe are genuine delistings that no vintage will ever
+    contain (`PRSR.L`, `SIG.L`), and a loader that raised on them would make
+    estimation impossible to run at all. The caller decides what an absence
+    means, and every caller in this repository reports the list rather than
+    swallowing it.
+
+    Returns
+    -------
+    tuple
+        Ticker to frame for everything the cache had, and the tickers it did
+        not, in sorted order.
+    """
+    frames: dict[str, pd.DataFrame] = {}
+    absent: list[str] = []
+    for ticker in tickers:
+        cached = _cache_path(ticker, vintage)
+        if cached.exists():
+            frames[ticker] = pd.read_parquet(cached)
+        else:
+            absent.append(ticker)
+    return frames, tuple(sorted(absent))
+
+
 def fetch_prices(
     tickers: Sequence[str],
     start: pd.Timestamp,
