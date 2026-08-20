@@ -36,10 +36,11 @@ So this report does not claim that UK energy-efficiency announcements fail to
 move exposed share prices. It claims something narrower and better supported:
 
 > On the exposure data curated to date, the dose-response estimand is not
-> identified. The point estimate is indistinguishable from zero, its sign
-> flips when any single event is removed, and it ceases to exist entirely when
-> two firms are dropped. The binding constraint is exposure curation, not
-> statistical power, and not the event dictionary.
+> identified. The point estimate is indistinguishable from zero, it varies by
+> 160% of itself on the removal of any single event, it flips sign when Genuit
+> alone is dropped, and it ceases to exist entirely when Genuit and Kingspan
+> are both dropped. The binding constraint is **the disclosure record**, not
+> curation effort, not statistical power, and not the event dictionary — §4.5.
 
 ---
 
@@ -187,8 +188,8 @@ row's weight on β is proportional to the square of what is left:
 | KRX.IR | spending-review-2025 | +1.58 | −0.60% | 2.18 |
 | NG.L | spending-review-2025 | −0.16 | −0.62% | 0.10 |
 
-**Top ten rows: 97.0% of the weight on β. Effective identifying rows: 6.5 of
-692.** The gap between 692 and 6.5 is the whole story of this report.
+**Top ten rows: 97.0% of the weight on β. Effective identifying rows: 8.6 of
+692.** The gap between 692 and 8.6 is the whole story of this report.
 
 ### 4.3 The drop path
 
@@ -196,16 +197,25 @@ row's weight on β is proportional to the square of what is left:
 |---|---|---|
 | — (baseline) | −0.000568 | 682 |
 | GEN.L | **+0.000873** | 664 |
-| GEN.L, KRX.IR | **not identified** | 666 |
-| GEN.L, KRX.IR, AV.L | **not identified** | 648 |
-| + PSN.L, KGF.L | **not identified** | 612 |
+| GEN.L, KRX.IR | **not identified** | 656 |
+| GEN.L, KRX.IR, BNZL.L | **not identified** | 638 |
+| + BKG.L, BWY.L | **not identified** | 602 |
 
 **Removing Genuit alone flips the sign of β.** Removing Genuit **and**
 Kingspan leaves no within-event exposure variation anywhere in the panel, so β
 does not exist — the estimator's collinearity guard fires, correctly.
 
+> **Correction, 2026-08-19.** An earlier draft of this table showed n *rising*
+> from 664 to 666 between the first and second rows, which is impossible.
+> `top_k_drop_path` was reporting the post-`dropna` count when the estimate
+> succeeded and the pre-`dropna` count when it failed — two different
+> quantities under one column heading. Neither branch was wrong alone. Fixed,
+> and the monotonicity is now pinned in `tests/test_influence.py`. No
+> conclusion in this report depended on it, which is exactly why it survived
+> a reading.
+
 Nine observations exceed the conventional Cook's distance threshold of 4/n,
-with a maximum of 24,530.
+with a maximum of 24,538.
 
 ### 4.4 Leave-one-event-out
 
@@ -383,13 +393,13 @@ sense — §4 — so the condition for running them has not been met. They stay
 parked.
 
 **Conformal inference.** Dropped from scope. It escapes the 1/(N+1)
-randomisation floor, which is not the constraint here; the constraint is 6.5
+randomisation floor, which is not the constraint here; the constraint is 8.6
 identifying observations, and no inference procedure fixes that.
 
 **Placebo-in-time and placebo-in-space.** Not run against this panel. A
 placebo distribution answers "could noise produce a β this large?" — a
 question worth asking of an identified estimate. Running it on a β supported by
-seven rows would produce a number with no interpretation, and the temptation to
+nine rows would produce a number with no interpretation, and the temptation to
 quote it as reassurance is exactly why it is being skipped rather than run and
 caveated.
 
