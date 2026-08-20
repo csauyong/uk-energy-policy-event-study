@@ -339,9 +339,21 @@ def top_k_drop_path(
     )
 
     steps: list[DropPathStep] = []
+    required = [exposure_column, "car", *controls]
     for depth in depths:
         dropped = tuple(str(unit) for unit in ranked.index[:depth])
         reduced = frame[~frame["unit_id"].isin(dropped)]
+        # Counted here, once, so both branches below report the SAME quantity.
+        #
+        # They did not. The success branch used `result.n_observations`, which
+        # `estimate_dose_response` reports AFTER dropping rows with a missing
+        # control; the failure branch used `len(reduced)`, which is before. The
+        # drop path therefore printed n RISING from 664 to 666 as a second firm
+        # was removed -- an impossible number that looked plausible enough to
+        # reach `reports/results.md` section 4.3. Neither branch was wrong on
+        # its own; they were answering different questions under one column
+        # name, which is the failure mode this project keeps re-finding.
+        complete = len(reduced.dropna(subset=required))
         try:
             result = estimate_dose_response(
                 reduced,
@@ -361,7 +373,7 @@ def top_k_drop_path(
                     dropped_units=dropped,
                     beta=float("nan"),
                     p_wild_bootstrap=float("nan"),
-                    n_observations=len(reduced),
+                    n_observations=complete,
                     share_of_beta_retained=0.0,
                 )
             )
@@ -372,7 +384,7 @@ def top_k_drop_path(
                 dropped_units=dropped,
                 beta=result.beta,
                 p_wild_bootstrap=result.p_wild_bootstrap,
-                n_observations=result.n_observations,
+                n_observations=complete,
                 share_of_beta_retained=(
                     result.beta / baseline.beta if baseline.beta != 0 else float("nan")
                 ),

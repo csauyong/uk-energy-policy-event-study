@@ -156,6 +156,38 @@ def test_drop_path_records_loss_of_identification_rather_than_raising() -> None:
     assert path[-1].share_of_beta_retained == 0.0
 
 
+def test_drop_path_n_falls_monotonically_across_the_identified_boundary() -> None:
+    """`n_observations` must mean one thing on both branches of the try/except.
+
+    It did not. The success branch reported the count AFTER `dropna` and the
+    failure branch the count BEFORE it, so a panel with any missing control
+    printed n *rising* as another firm was dropped -- 664 then 666 on the real
+    data, which reached `reports/results.md` §4.3 before anyone noticed.
+    Neither branch was wrong alone; they answered different questions under one
+    column name. An impossible number that looks plausible is this project's
+    recurring defect, so the invariant is pinned rather than left to
+    inspection.
+    """
+    frame = skewed_frame(n_exposed=2)
+    # One missing control, on a firm the drop path never removes. That is what
+    # made the two counts diverge: the NaN row survives every depth, so the
+    # pre-dropna and post-dropna counts differ at every step. Putting it on a
+    # dropped firm instead would hide the defect, which is how it survived.
+    survivor = frame["unit_id"].iloc[-1]
+    frame.loc[frame["unit_id"] == survivor, "size"] = np.nan
+
+    path = top_k_drop_path(frame, scheme=WEBB, depths=(1, 2, 3), bootstrap_draws=50)
+    counts = [step.n_observations for step in path]
+
+    # The deepest drop loses identification and takes the except branch; the
+    # first does not. The counts must still descend across that boundary.
+    assert np.isnan(path[-1].beta), "expected the deepest drop to lose identification"
+    assert counts == sorted(counts, reverse=True), (
+        f"n_observations must fall as firms are dropped, got {counts}"
+    )
+    assert len(set(counts)) == len(counts), f"each drop removes rows, got {counts}"
+
+
 # -- winsorisation and functional form ------------------------------------
 
 
