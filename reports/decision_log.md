@@ -313,3 +313,13 @@ right when written and became wrong when something upstream moved. The
 estimator has guards that fire; prose does not. The only defence that worked
 here was re-running the pipeline and reading the output against the document,
 which is now the last step in `CLAUDE.md` §5.
+
+### Framing review of `README.md` (2026-08-20)
+
+No figure changed. Both entries are about what the document *claims* on the
+strength of figures that were already correct.
+
+| # | Date | Phase | What was tried | Result | Kept? | Note |
+|---|------|-------|----------------|--------|-------|------|
+| 77 | 2026-08-20 | C2 | **The README's headline answer read "No — and the reason is a fact about company reporting."** | Over-claimed. "No" was never established: §4 of `results.md` shows the null carries no information, so the question is open rather than answered in the negative | fixed | The headline now leads with the identification failure — the claim the evidence actually supports — and the null appears below it as the number that looks informative and is not. Self-undercutting in the old version: the section asserted an answer and then spent forty lines explaining why it had none. Closing line likewise changed from "the null would have been wrong" to "a claim this data cannot carry" |
+| 78 | 2026-08-20 | C2 | Add a **sixty-second version** to the README, above the detail | Kept, ~165 words | added | Four beats: what was tested, what the regression said, why it was not believed, what the constraint turned out to be. The full chain — power redesign, curation protocol, leverage diagnostics, IFRS 8 — takes four minutes to narrate and buries the finding. The short version is also the honest one: the leverage audit is the result, not an appendix to it |

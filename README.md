@@ -6,9 +6,40 @@ prices of the companies they affect — and can we measure it honestly?**
 That is the whole question. This repository is the machinery for answering it
 without fooling ourselves, which turns out to be most of the work.
 
-## The answer, as of 2026-08-19
+## Where this stands, as of 2026-08-19
 
-**No — and the reason is a fact about company reporting, not about policy.**
+**The estimand is not identified from the public disclosure record.** The
+question is open, not answered in the negative: this study cannot say whether
+these announcements move exposed share prices, and the reason is a fact about
+company reporting rather than about policy.
+
+That is a narrower claim than "no effect", and it is the one the evidence
+supports.
+
+### The sixty-second version
+
+**What I was testing.** Whether UK energy-efficiency and heating policy
+announcements move the share prices of the firms they affect, in proportion to
+how exposed each firm is — a dose-response across the whole listed universe,
+on announcement days.
+
+**What the regression said.** β = −0.057% per standard deviation of exposure,
+p = 0.52, across 682 firm-event observations, against a 0.26% minimum
+detectable effect. A clean, well-powered null.
+
+**Why I didn't believe it.** Nine of those 682 rows carry any exposure at all,
+and two firms account for all nine. Partialling out the fixed effects puts 97%
+of the weight on β on ten rows — 8.6 effective observations. Drop Genuit and β
+flips sign; drop Genuit and Kingspan and β ceases to exist.
+
+**What the real constraint turned out to be.** Exposure is affected-revenue
+share × UK-revenue share, and under IFRS 8 a firm names a country only above a
+materiality threshold. The multinationals — the large insulation names — all
+sit below theirs, so none publishes a UK figure. The variable that does the
+discriminating is not in the disclosure record. That is the finding: not a
+null, a measurement result.
+
+### The regression, and why it does not mean what it looks like
 
 The regression runs end to end. It returns β = −0.057% per standard deviation
 of exposure, p = 0.52, across 682 firm-event observations and 17 clusters,
@@ -20,6 +51,10 @@ and **two firms** account for all nine. A Frisch-Waugh decomposition puts 97%
 of the weight on β on ten rows, and the effective count of identifying
 observations at **8.6**. Drop Genuit and β flips sign; drop Genuit and Kingspan
 and β ceases to exist.
+
+A null is only as informative as the cross-section behind it. This one rests on
+8.6 effective observations, so it is evidence for nothing — neither that the
+effect is absent nor that it is there.
 
 ### Why more work would not fix it
 
@@ -52,13 +87,15 @@ So the honest finding is:
 
 > The cross-section this estimand needs does not exist in the public
 > disclosure record. The binding constraint is the reporting standard, not
-> curation effort, not statistical power, and not the event dictionary.
+> curation effort, not statistical power, and not the event dictionary. The
+> underlying question stays open; what this study establishes is that public
+> disclosure cannot answer it as posed.
 
 The full audit is **[`reports/results.md`](reports/results.md)** — §4.5 is the
 disclosure argument, §4 is why the null is uninformative, §6 is what a
 follow-up would have to change. The project's own diagnostics caught this.
-Without them the number would have been published as a null, and the null
-would have been wrong.
+Without them the number would have gone out as a null, which is a claim this
+data cannot carry.
 
 ---
 
