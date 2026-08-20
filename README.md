@@ -6,33 +6,59 @@ prices of the companies they affect — and can we measure it honestly?**
 That is the whole question. This repository is the machinery for answering it
 without fooling ourselves, which turns out to be most of the work.
 
-## The answer, as of 2026-08-18
+## The answer, as of 2026-08-19
 
-**Not yet — and the interesting part is why not.**
+**No — and the reason is a fact about company reporting, not about policy.**
 
-The regression runs end to end. It returns β = −0.0092% per standard deviation
-of exposure, p = 0.94, across 682 firm-event observations and 17 clusters,
-against a minimum detectable effect of 0.31%. That reads like a clean,
+The regression runs end to end. It returns β = −0.057% per standard deviation
+of exposure, p = 0.52, across 682 firm-event observations and 17 clusters,
+against a minimum detectable effect of 0.26%. That reads like a clean,
 well-powered null.
 
-**It isn't one.** Of those 682 rows, **seven** carry a non-zero exposure score,
-and two firms account for all seven. A Frisch-Waugh decomposition puts 97% of
-the weight on β on ten rows, and the effective count of identifying
-observations at **6.5**. Drop one firm and β moves by a factor of 22; drop two
-and it ceases to exist at all.
+**It isn't one.** Of those 682 rows, **nine** carry a non-zero exposure score,
+and **two firms** account for all nine. A Frisch-Waugh decomposition puts 97%
+of the weight on β on ten rows, and the effective count of identifying
+observations at **8.6**. Drop Genuit and β flips sign; drop Genuit and Kingspan
+and β ceases to exist.
 
-So the honest finding is not *"policy announcements don't move exposed
-prices"*. It is:
+### Why more work would not fix it
 
-> The dose-response estimand is not identified on the exposure data curated so
-> far. The binding constraint is exposure curation — specifically, missing
-> back-vintages for firms already curated — and it is neither statistical
-> power nor the event dictionary.
+The obvious diagnosis is a curation backlog — go and read more annual reports.
+That was tested, and it is wrong.
 
-The full audit is in **[`reports/results.md`](reports/results.md)**, including
-what would fix it and in what order. The project's own diagnostics are what
-caught this. Without them the number would have been published as a null, and
-the null would have been wrong.
+Exposure on this channel is **affected revenue share × UK revenue share**. The
+UK multiplier is necessary: without it every foreign manufacturer inherits full
+UK exposure. But under IFRS 8 a company names a country only when it clears a
+materiality threshold, and:
+
+| Firm | UK revenue disclosed? | Why |
+|---|---|---|
+| Kingspan | FY2014–FY2021 only | Names a country only above **15%** of group revenue; Britain stopped clearing it in FY2022 |
+| Rockwool | **Never** | "In no other country does revenue exceed **10%**" — same wording FY2020, FY2021, FY2024 |
+| Genuit, Marshalls, Ibstock | Yes, 0.89–1.00 | UK-domiciled, so the multiplier does almost nothing |
+
+**The discriminating variable is unpublished exactly where it would
+discriminate.** The large insulation multinationals — the names a reader would
+expect to carry the exposure — are precisely the ones that never report a UK
+figure. The firms that do report one are British, where the multiplier is ~1
+and changes nothing.
+
+That is not a hole, because it comes with bounds. Each firm's own threshold
+bounds its missing value: Rockwool's magnitude is under 0.079 and Kingspan's
+under 0.032, against Genuit's measured 0.256. **Even a perfect resolution adds
+two firms and leaves Genuit the largest exposure by a factor of three.**
+
+So the honest finding is:
+
+> The cross-section this estimand needs does not exist in the public
+> disclosure record. The binding constraint is the reporting standard, not
+> curation effort, not statistical power, and not the event dictionary.
+
+The full audit is **[`reports/results.md`](reports/results.md)** — §4.5 is the
+disclosure argument, §4 is why the null is uninformative, §6 is what a
+follow-up would have to change. The project's own diagnostics caught this.
+Without them the number would have been published as a null, and the null
+would have been wrong.
 
 ---
 
