@@ -294,3 +294,22 @@ pre-date it, leaving Kingspan as the only firm with pre-2025 vintages.
 | # | Date | Phase | What was tried | Result | Kept? | Note |
 |---|------|-------|----------------|--------|-------|------|
 | 50 | 2026-08-18 | C0 | Recount the event grouping from the frozen dictionary | **24 events → 21 groups** at the 14-day default, not 18 as `README.md` and `CLAUDE.md` both stated | correction | The 18 figure was stale. Both files corrected. Group count drives the bootstrap p-value floor and the MDE, so an over-stated collapse would have over-stated the clustering |
+
+### Review of the 2026-08-19 session (2026-08-19, later)
+
+Independent re-run of `make check`, `make estimate` and `make diagnostics`
+against the committed tree. Every reported figure reproduced exactly. Two
+defects found in the reporting layer, neither of which changes a conclusion.
+
+| # | Date | Phase | What was tried | Result | Kept? | Note |
+|---|------|-------|----------------|--------|-------|------|
+| 74 | 2026-08-19 | C2 | **`top_k_drop_path` reported two different quantities under one column** | The drop path printed n **rising** 664 → 666 as a second firm was dropped, which is impossible | fixed | The success branch used `result.n_observations`, counted **after** `estimate_dose_response` drops rows with a missing control; the failure branch used `len(reduced)`, counted **before**. Neither was wrong alone. Corrected to 682 → 664 → 656 → 638 → 602 and **pinned in `tests/test_influence.py`** — the first version of that test passed against the bug, because the NaN sat on a firm the path drops; it now sits on a survivor |
+| 75 | 2026-08-19 | C2 | **`README.md` was never revised after the FY2023 curation** | It still carried β = −0.0092%, p = 0.94, seven rows, 6.5 effective rows, MDE 0.31% — and named the binding constraint as "missing back-vintages for firms already curated" | fixed | That is precisely the claim rows 68–71 disprove. The README is the first thing a reader sees, so the document most likely to be read asserted the one conclusion the work had refuted. Rewritten around the disclosure finding |
+| 76 | 2026-08-19 | C2 | Stale figures elsewhere in `results.md` | Headline block still said the sign "flips when any single event is removed", contradicting its own §4.4; §4.2 and §7 still quoted 6.5 and "seven rows"; max Cook's quoted 24,530 against 24,538 | fixed | §4.4 was correct and careful — the sign no longer flips after the FY2023 curation. The summary had not been brought into line with the body it summarises |
+
+**What this says about the process.** All three defects are in the reporting
+layer, not the estimator, and all three are the same shape: a number that was
+right when written and became wrong when something upstream moved. The
+estimator has guards that fire; prose does not. The only defence that worked
+here was re-running the pipeline and reading the output against the document,
+which is now the last step in `CLAUDE.md` §5.

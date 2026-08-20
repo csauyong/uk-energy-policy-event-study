@@ -271,6 +271,15 @@ identified — the condition has not been met and 8.6 effective rows is not it.
 **Do not** quote β, the MDE, or a placebo distribution without the identifying
 row count beside it.
 
+**5. After any re-run, read the documents against the output.** Added
+2026-08-19 after a review found three stale figures that had been correct when
+written: `README.md` still carried the pre-curation β and still named
+back-vintage curation as the binding constraint — the one claim this project
+had just refuted — and `results.md`'s summary contradicted its own §4.4. The
+estimator has guards that fire. Prose does not. `make estimate && make
+diagnostics`, then diff every number in `README.md`, `results.md` and this file
+against `reports/tables/`. Decision log rows 74–76.
+
 ## 6. Working agreements for this repo
 
 Inherited from `../CLAUDE.md` §8, plus what this project learned:
@@ -286,5 +295,11 @@ Inherited from `../CLAUDE.md` §8, plus what this project learned:
   returning −82%, a `count // 2` group estimate off by half, and a mistyped id
   that made a deletion look harmless. All three produced *plausible* numbers.
 - **A silent no-op is worse than a crash.** Prefer raising.
+- **One column heading, one quantity.** `top_k_drop_path` reported the
+  post-`dropna` count on success and the pre-`dropna` count on failure, so the
+  drop path printed n *rising* as more firms were dropped. Neither branch was
+  wrong alone. A number that is impossible but plausible-looking is this
+  repository's most frequent defect, and every instance has been caught by
+  running the thing rather than by reading it.
 - **Report what did not work.** `reports/decision_log.md` is the audit trail
   and includes every abandoned specification.
